@@ -1,0 +1,14 @@
+<phpunit bootstrap="vendor/autoload.php"
+		 backupGlobals="false"
+		 backupStaticAttributes="false"
+		 strict="true"
+		 verbose="true"
+		 timeoutForSmallTests="5">
+	<testsuites>
+		<testsuite name="php-view">
+			<file>tests/Kir/Templating/View/Helpers/Escaping/HtmlEscapingTest.php</file>
+			<file>tests/Kir/Templating/View/Helpers/FileSystemTest.php</file>
+			<file>tests/Kir/Templating/View/Engines/PhpEngine/WorkerTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>
