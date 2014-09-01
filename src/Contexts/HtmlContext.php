@@ -19,7 +19,7 @@ class HtmlContext implements Context {
 	 * @return string
 	 */
 	public function escape($value) {
-		return htmlentities($value, ENT_COMPAT, $this->charset);
+		return strtr($value, array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;', '\'' => '&#39;', '&' => '&amp;'));
 	}
 
 	/**
