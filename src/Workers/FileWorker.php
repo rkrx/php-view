@@ -69,8 +69,8 @@ class FileWorker extends Worker {
 		if($this->getLayout()) {
 			$regions = $this->getRegions();
 			$regions['content'] = $content;
-			$worker = new FileWorker($this->basePath, $this->fileExt, $regions, $this->context, $this->recursive);
-			$content = $worker->render(Directories::concat($subPath, $this->getLayout()), $regions);
+			$worker = new FileWorker(Directories::concat($this->basePath, $subPath), $this->fileExt, $regions, $this->context, $this->recursive);
+			$content = $worker->render($this->getLayout(), $regions);
 		}
 		return $content;
 	}
