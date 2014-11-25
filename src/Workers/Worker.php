@@ -9,22 +9,18 @@ abstract class Worker {
 	 * @var array
 	 */
 	private $vars = array();
-
 	/**
 	 * @var RecursiveStringPath
 	 */
 	private $recursive = null;
-
 	/**
 	 * @var Context
 	 */
 	private $context = null;
-
 	/**
 	 * @var string
 	 */
 	private $layout = null;
-
 	/**
 	 * @var array
 	 */
@@ -36,7 +32,7 @@ abstract class Worker {
 	 * @param Context $context
 	 * @param RecursiveStringPath $recursive
 	 */
-	public function __construct(array $vars, array $regions, Context $context, RecursiveStringPath $recursive) {
+	public function __construct(array $vars = array(), array $regions = array(), Context $context, RecursiveStringPath $recursive) {
 		$this->vars = $vars;
 		$this->recursive = $recursive;
 		$this->context = $context;
@@ -144,9 +140,9 @@ abstract class Worker {
 	 * @param string $name
 	 * @return string
 	 */
-	public function region($name) {
+	public function getRegion($name) {
 		if(array_key_exists($name, $this->regions)) {
-			return $this->region($name);
+			return $this->getRegion($name);
 		}
 		return '';
 	}
@@ -155,7 +151,7 @@ abstract class Worker {
 	 * @param string $name
 	 * @return $this
 	 */
-	public function beginRegion($name) {
+	public function region($name) {
 		ob_start(function ($content) use ($name) {
 			$this->regions[$name] = $content;
 		});
@@ -166,7 +162,7 @@ abstract class Worker {
 	 * @param string $name
 	 * @return $this
 	 */
-	public function beginPlaceholder($name) {
+	public function placeholder($name) {
 		if(!array_key_exists($name, $this->regions)) {
 			ob_start(function ($content) {
 				return $content;

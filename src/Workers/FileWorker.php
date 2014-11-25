@@ -9,20 +9,19 @@ class FileWorker extends Worker {
 	 * @var string
 	 */
 	private $basePath;
-
 	/**
-	 * @var array
+	 * @var string
 	 */
 	private $fileExt;
 
 	/**
-	 * @param array $basePath
-	 * @param array $fileExt
+	 * @param string $basePath
+	 * @param string $fileExt
 	 * @param array $vars
 	 * @param Context $context
 	 * @param RecursiveStringPath $recursive
 	 */
-	public function __construct($basePath, $fileExt, array $vars, Context $context, RecursiveStringPath $recursive) {
+	public function __construct($basePath, $fileExt, array $vars = array(), Context $context, RecursiveStringPath $recursive) {
 		parent::__construct($vars, [], $context, $recursive);
 		$this->basePath = $basePath;
 		$this->fileExt = $fileExt;
