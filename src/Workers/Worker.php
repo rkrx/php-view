@@ -131,7 +131,7 @@ abstract class Worker {
 	 * @param string $layout
 	 * @return $this
 	 */
-	public function setLayout($layout) {
+	public function layout($layout) {
 		$this->layout = $layout;
 		return $this;
 	}
