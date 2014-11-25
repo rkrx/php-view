@@ -1,4 +1,7 @@
-/.idea
-/vendor
-/composer.lock
-/test.php
+/*
+!/src
+!/tests
+!/.gitignore
+!/composer.json
+!/LICENSE
+!/README.md
