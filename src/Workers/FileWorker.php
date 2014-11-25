@@ -2,6 +2,7 @@
 namespace Kir\View\Workers;
 
 use Kir\View\Contexts\Context;
+use Kir\View\Helpers\Directories;
 use Kir\View\Helpers\RecursiveStringPath;
 
 class FileWorker extends Worker {
@@ -13,6 +14,14 @@ class FileWorker extends Worker {
 	 * @var string
 	 */
 	private $fileExt;
+	/**
+	 * @var RecursiveStringPath
+	 */
+	private $recursive = null;
+	/**
+	 * @var Context
+	 */
+	private $context = null;
 
 	/**
 	 * @param string $basePath
@@ -25,6 +34,8 @@ class FileWorker extends Worker {
 		parent::__construct($vars, [], $context, $recursive);
 		$this->basePath = $basePath;
 		$this->fileExt = $fileExt;
+		$this->context = $context;
+		$this->recursive = $recursive;
 	}
 
 	/**
@@ -35,11 +46,13 @@ class FileWorker extends Worker {
 	 */
 	public function render($resource, array $vars = array()) {
 		$oldVars = $this->getVars();
+		$subPath = dirname($resource);
+		$filename = basename($resource);
 		ob_start();
 		try {
 			$vars = array_merge($oldVars, $vars);
 			$this->setVars($vars);
-			$templateFilename = $this->concat($this->basePath, $resource) . $this->fileExt;
+			$templateFilename = Directories::concat($this->basePath, $subPath, $filename) . $this->fileExt;
 			call_user_func(function () use ($templateFilename) {
 				/** @noinspection PhpIncludeInspection */
 				require $templateFilename;
@@ -56,22 +69,9 @@ class FileWorker extends Worker {
 		if($this->getLayout()) {
 			$regions = $this->getRegions();
 			$regions['content'] = $content;
-			$content = $this->render($this->getLayout(), $regions);
+			$worker = new FileWorker($this->basePath, $this->fileExt, $regions, $this->context, $this->recursive);
+			$content = $worker->render(Directories::concat($subPath, $this->getLayout()), $regions);
 		}
 		return $content;
-	}
-
-	/**
-	 * @param string $basePath
-	 * @param string $filename
-	 * @return string
-	 */
-	private function concat($basePath, $filename) {
-		$basePath = str_replace('\\', '/', $basePath);
-		$filename = str_replace('\\', '/', $filename);
-		if($basePath && $filename) {
-			return rtrim($basePath, '/') . '/' . ltrim($filename, '/');
-		}
-		return $basePath . $filename;
 	}
 }
