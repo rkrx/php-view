@@ -128,6 +128,13 @@ abstract class Worker {
 	}
 
 	/**
+	 * @return string|null
+	 */
+	public function getLayout() {
+		return $this->layout;
+	}
+
+	/**
 	 * @param string $layout
 	 * @return $this
 	 */
@@ -145,6 +152,13 @@ abstract class Worker {
 			return $this->getRegion($name);
 		}
 		return '';
+	}
+
+	/**
+	 * @return string[]
+	 */
+	public function getRegions() {
+		return $this->regions;
 	}
 
 	/**
@@ -206,4 +220,12 @@ abstract class Worker {
 	protected function setVars(array $vars = []) {
 		$this->vars = $vars;
 	}
+
+	/**
+	 * @param string $resource
+	 * @param array $vars
+	 * @throws \Exception
+	 * @return string
+	 */
+	abstract public function render($resource, array $vars = array());
 }

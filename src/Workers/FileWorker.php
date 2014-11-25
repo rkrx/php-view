@@ -28,23 +28,22 @@ class FileWorker extends Worker {
 	}
 
 	/**
-	 * @param string $filename
+	 * @param string $resource
 	 * @param array $vars
 	 * @throws \Exception
 	 * @return string
 	 */
-	public function render($filename, array $vars = array()) {
+	public function render($resource, array $vars = array()) {
 		$oldVars = $this->getVars();
 		ob_start();
 		try {
 			$vars = array_merge($oldVars, $vars);
 			$this->setVars($vars);
-			$templateFilename = $this->concat($this->basePath, $filename) . $this->fileExt;
-			$func = function () use ($templateFilename) {
+			$templateFilename = $this->concat($this->basePath, $resource) . $this->fileExt;
+			call_user_func(function () use ($templateFilename) {
 				/** @noinspection PhpIncludeInspection */
 				require $templateFilename;
-			};
-			$func();
+			});
 			$this->setVars($oldVars);
 		} catch (\Exception $e) {
 			$this->setVars($oldVars);
@@ -53,7 +52,13 @@ class FileWorker extends Worker {
 			}
 			throw $e;
 		}
-		return ob_get_clean();
+		$content = ob_get_clean();
+		if($this->getLayout()) {
+			$regions = $this->getRegions();
+			$regions['content'] = $content;
+			$content = $this->render($this->getLayout(), $regions);
+		}
+		return $content;
 	}
 
 	/**
