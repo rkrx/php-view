@@ -11,10 +11,6 @@ class FileWorker extends Worker {
 	 */
 	private $basePath;
 	/**
-	 * @var string
-	 */
-	private $fileExt;
-	/**
 	 * @var RecursiveStringPath
 	 */
 	private $recursive = null;
@@ -25,15 +21,13 @@ class FileWorker extends Worker {
 
 	/**
 	 * @param string $basePath
-	 * @param string $fileExt
 	 * @param array $vars
 	 * @param Context $context
 	 * @param RecursiveStringPath $recursive
 	 */
-	public function __construct($basePath, $fileExt, array $vars = array(), Context $context, RecursiveStringPath $recursive) {
+	public function __construct($basePath, array $vars = array(), Context $context, RecursiveStringPath $recursive) {
 		parent::__construct($vars, [], $context, $recursive);
 		$this->basePath = $basePath;
-		$this->fileExt = $fileExt;
 		$this->context = $context;
 		$this->recursive = $recursive;
 	}
@@ -52,7 +46,7 @@ class FileWorker extends Worker {
 		try {
 			$vars = array_merge($oldVars, $vars);
 			$this->setVars($vars);
-			$templateFilename = Directories::concat($this->basePath, $subPath, $filename) . $this->fileExt;
+			$templateFilename = Directories::concat($this->basePath, $subPath, $filename);
 			call_user_func(function () use ($templateFilename) {
 				/** @noinspection PhpIncludeInspection */
 				require $templateFilename;
@@ -70,7 +64,7 @@ class FileWorker extends Worker {
 			$regions = $this->getRegions();
 			$regions['content'] = $content;
 			$layoutPath = Directories::concat($this->basePath, $subPath, $this->getLayout());
-			$worker = new FileWorker(dirname($layoutPath), $this->fileExt, $regions, $this->context, $this->recursive);
+			$worker = new FileWorker(dirname($layoutPath), $regions, $this->context, $this->recursive);
 			$content = $worker->render(basename($layoutPath), $regions);
 		}
 		return $content;

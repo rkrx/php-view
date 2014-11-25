@@ -74,7 +74,7 @@ class View {
 	public function render($resource, array $vars = array()) {
 		$subDir = dirname($resource);
 		$filename = basename($resource);
-		$worker = new FileWorker(Directories::concat($this->basePath, $subDir), '.phtml', $this->vars, $this->context, $this->recursive);
+		$worker = new FileWorker(Directories::concat($this->basePath, $subDir), $this->vars, $this->context, $this->recursive);
 		return $worker->render($filename, $vars);
 	}
 }
