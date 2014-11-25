@@ -1,4 +1,5 @@
 {
+	"name": "rkr/view",
 	"require": {
 		"php": ">=5.4"
 	},
