@@ -3,6 +3,7 @@ namespace Kir\View;
 
 use Kir\View\Contexts\Context;
 use Kir\View\Contexts\HtmlContext;
+use Kir\View\Helpers\Directories;
 use Kir\View\Helpers\RecursiveStringPath;
 use Kir\View\Workers\FileWorker;
 
@@ -66,12 +67,14 @@ class View {
 	}
 
 	/**
-	 * @param string $filename
+	 * @param string $resource
 	 * @param array $vars
 	 * @return string
 	 */
-	public function render($filename, array $vars = array()) {
-		$worker = new FileWorker($this->basePath, '.phtml', $this->vars, $this->context, $this->recursive);
+	public function render($resource, array $vars = array()) {
+		$subDir = dirname($resource);
+		$filename = basename($resource);
+		$worker = new FileWorker(Directories::concat($this->basePath, $subDir), '.phtml', $this->vars, $this->context, $this->recursive);
 		return $worker->render($filename, $vars);
 	}
 }
