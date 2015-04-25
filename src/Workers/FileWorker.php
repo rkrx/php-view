@@ -79,7 +79,7 @@ class FileWorker extends AbstractWorker {
 	 * @throws \Exception
 	 */
 	private function generateLayoutContent($content) {
-		if($this->getLayout()) {
+		if($this->getLayout() !== null) {
 			$regions = $this->getRegions();
 			$regions['content'] = $content;
 			$layoutResource = $this->getLayout();
