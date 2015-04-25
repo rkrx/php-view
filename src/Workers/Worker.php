@@ -58,6 +58,11 @@ interface Worker {
 	public function getLayout();
 
 	/**
+	 * @return array
+	 */
+	public function getLayoutVars();
+
+	/**
 	 * @param string $layout
 	 * @param array $vars
 	 * @return $this

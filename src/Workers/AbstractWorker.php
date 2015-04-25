@@ -4,8 +4,8 @@ namespace Kir\View\Workers;
 abstract class AbstractWorker implements Worker {
 	/** @var array */
 	private $vars = array();
-	/** @var array|null */
-	private $layout = null;
+	/** @var array */
+	private $layout = [null, []];
 	/** @var array */
 	private $regions = array();
 	/** @var WorkerConfiguration */
@@ -111,10 +111,17 @@ abstract class AbstractWorker implements Worker {
 	}
 
 	/**
-	 * @return array|null
+	 * @return string|null
 	 */
 	public function getLayout() {
-		return $this->layout;
+		return $this->layout[0];
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getLayoutVars() {
+		return $this->layout[1];
 	}
 
 	/**
