@@ -9,7 +9,7 @@ class FileWorker extends AbstractWorker {
 	private $basePath;
 	/** @var WorkerConfiguration */
 	private $configuration;
-	/** @var array */
+	/** @var string */
 	private $fileExt;
 
 	/**
