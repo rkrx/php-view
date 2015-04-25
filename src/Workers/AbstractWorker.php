@@ -1,6 +1,14 @@
 <?php
 namespace Kir\View\Workers;
 
+use Generator;
+use Traversable;
+
+if(!class_exists('Generator')) {
+	interface Generator {
+	}
+}
+
 abstract class AbstractWorker implements Worker {
 	/** @var array */
 	private $vars = array();
@@ -104,7 +112,7 @@ abstract class AbstractWorker implements Worker {
 			return $default;
 		}
 		$value = $this->get($key);
-		if(!is_array($value) && !$value instanceof \Traversable && !$value instanceof \Generator) {
+		if(!is_array($value) && !$value instanceof Traversable && !$value instanceof Generator) {
 			$value = array();
 		}
 		return $value;
