@@ -16,7 +16,7 @@ class RecursiveStringPath {
 
 	/**
 	 * @param array $array
-	 * @param array $path
+	 * @param string $path
 	 * @return bool
 	 */
 	public function has($array, $path) {
@@ -26,7 +26,7 @@ class RecursiveStringPath {
 
 	/**
 	 * @param array $array
-	 * @param array $path
+	 * @param string $path
 	 * @param mixed $default
 	 * @return array
 	 */
@@ -37,7 +37,7 @@ class RecursiveStringPath {
 
 	/**
 	 * @param array $array
-	 * @param array $path
+	 * @param string $path
 	 * @param mixed $value
 	 * @return mixed
 	 */
@@ -48,7 +48,7 @@ class RecursiveStringPath {
 
 	/**
 	 * @param array $array
-	 * @param array $path
+	 * @param string $path
 	 * @return mixed
 	 */
 	public function del($array, $path) {
