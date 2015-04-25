@@ -4,11 +4,6 @@ namespace Kir\View\Workers;
 use Generator;
 use Traversable;
 
-if(!class_exists('Generator')) {
-	interface Generator {
-	}
-}
-
 abstract class AbstractWorker implements Worker {
 	/** @var array */
 	private $vars = array();
