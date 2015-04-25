@@ -2,7 +2,7 @@ php-view
 ========
 
 [![Build Status](https://travis-ci.org/rkrx/php-view.svg?branch=master)](https://travis-ci.org/rkrx/php-view)
-
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rkrx/php-view/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rkrx/php-view/?branch=master)
 
 More secure and easy to use templating system for php5.4+. 
 
