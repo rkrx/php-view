@@ -7,26 +7,24 @@ use Kir\View\Helpers\RecursiveStringPath;
 abstract class AbstractWorker implements Worker {
 	/** @var array */
 	private $vars = array();
-	/** @var RecursiveStringPath */
-	private $recursive = null;
-	/** @var Context */
-	private $context = null;
 	/** @var string */
 	private $layout = null;
 	/** @var array */
 	private $regions = array();
+	/**
+	 * @var WorkerConfiguration
+	 */
+	private $configuration;
 
 	/**
 	 * @param array $vars
 	 * @param array $regions
-	 * @param Context $context
-	 * @param RecursiveStringPath $recursive
+	 * @param WorkerConfiguration $configuration
 	 */
-	public function __construct(array $vars = array(), array $regions = array(), Context $context, RecursiveStringPath $recursive) {
+	public function __construct(array $vars = array(), array $regions = array(), WorkerConfiguration $configuration) {
 		$this->vars = $vars;
-		$this->recursive = $recursive;
-		$this->context = $context;
 		$this->regions = $regions;
+		$this->configuration = $configuration;
 	}
 
 	/**
@@ -34,7 +32,7 @@ abstract class AbstractWorker implements Worker {
 	 * @return bool
 	 */
 	public function has($key) {
-		return $this->recursive->has($this->vars, $key);
+		return $this->configuration->getRecursiveAccessor()->has($this->vars, $key);
 	}
 
 	/**
@@ -46,7 +44,7 @@ abstract class AbstractWorker implements Worker {
 		if(!$this->has($key)) {
 			return $default;
 		}
-		return $this->recursive->get($this->vars, $key, $default);
+		return $this->configuration->getRecursiveAccessor()->get($this->vars, $key, $default);
 	}
 
 	/**
@@ -62,7 +60,7 @@ abstract class AbstractWorker implements Worker {
 		if(!is_scalar($value)) {
 			$value = '';
 		}
-		return $this->context->escape($value);
+		return $this->configuration->getContext()->escape($value);
 	}
 
 	/**
@@ -126,10 +124,11 @@ abstract class AbstractWorker implements Worker {
 
 	/**
 	 * @param string $layout
+	 * @param array $vars
 	 * @return $this
 	 */
-	public function layout($layout) {
-		$this->layout = $layout;
+	public function layout($layout, array $vars = []) {
+		$this->layout = [$layout, $vars];
 		return $this;
 	}
 

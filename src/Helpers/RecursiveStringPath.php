@@ -20,7 +20,8 @@ class RecursiveStringPath {
 	 * @return bool
 	 */
 	public function has($array, $path) {
-		return RecursiveArrayPath::has(self::getPath($array), $path);
+		$arrayPath = self::getPath($path);
+		return RecursiveArrayPath::has($array, $arrayPath);
 	}
 
 	/**
@@ -30,7 +31,8 @@ class RecursiveStringPath {
 	 * @return array
 	 */
 	public function get($array, $path, $default) {
-		return RecursiveArrayPath::get(self::getPath($array), $path, $default);
+		$arrayPath = self::getPath($path);
+		return RecursiveArrayPath::get($array, $arrayPath, $default);
 	}
 
 	/**
@@ -40,7 +42,8 @@ class RecursiveStringPath {
 	 * @return mixed
 	 */
 	public function set($array, $path, $value) {
-		return RecursiveArrayPath::set(self::getPath($array), $path, $value);
+		$arrayPath = self::getPath($path);
+		return RecursiveArrayPath::set($array, $arrayPath, $value);
 	}
 
 	/**
@@ -49,7 +52,8 @@ class RecursiveStringPath {
 	 * @return mixed
 	 */
 	public function del($array, $path) {
-		return RecursiveArrayPath::del(self::getPath($array), $path);
+		$arrayPath = self::getPath($path);
+		return RecursiveArrayPath::del($array, $arrayPath);
 	}
 
 	/**

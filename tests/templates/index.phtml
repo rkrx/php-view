@@ -1,0 +1,7 @@
+<?php /* @var \Kir\View\Workers\Worker $this */ ?>
+<?php $this->layout('layout') ?>
+
+!
+<?php $this->region('test') ?>
+index <?= $this->render('test/include') ?>
+<?php $this->end() ?>

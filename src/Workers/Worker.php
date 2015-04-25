@@ -59,9 +59,10 @@ interface Worker {
 
 	/**
 	 * @param string $layout
+	 * @param array $vars
 	 * @return $this
 	 */
-	public function layout($layout);
+	public function layout($layout, array $vars = []);
 
 	/**
 	 * @param string $name
