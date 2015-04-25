@@ -5,4 +5,5 @@
 !/composer.json
 !/LICENSE
 !/README.md
+!/.travis.yml
 !/tests.xml
