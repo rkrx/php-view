@@ -7,8 +7,6 @@ use Kir\View\Workers\FileWorker\FileWorkerConfiguration;
 class FileWorker extends AbstractWorker {
 	/** @var string */
 	private $basePath;
-	/** @var WorkerConfiguration */
-	private $configuration;
 	/** @var string */
 	private $fileExt;
 
@@ -24,7 +22,6 @@ class FileWorker extends AbstractWorker {
 		}
 		parent::__construct($vars, [], $configuration);
 		$this->basePath = $basePath;
-		$this->configuration = $configuration;
 		$this->fileExt = $fileExt;
 	}
 
@@ -35,7 +32,7 @@ class FileWorker extends AbstractWorker {
 	 * @return string
 	 */
 	public function render($resource, array $vars = array()) {
-		$worker = new FileWorker($this->basePath, $this->fileExt, $this->getVars(), $this->configuration);
+		$worker = new FileWorker($this->basePath, $this->fileExt, $this->getVars(), $this->getConfiguration());
 		return $worker->getContent($resource, $vars);
 	}
 

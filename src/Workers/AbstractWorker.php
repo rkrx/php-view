@@ -219,4 +219,11 @@ abstract class AbstractWorker implements Worker {
 	 * @return string
 	 */
 	abstract public function render($resource, array $vars = array());
+
+	/**
+	 * @return WorkerConfiguration
+	 */
+	protected function getConfiguration() {
+		return $this->configuration;
+	}
 }
