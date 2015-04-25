@@ -6,7 +6,7 @@ php-view
 
 More secure and easy to use templating system for php5.4+. 
 
-Designgoals: 
+Design goals: 
 
 * Interface-driven and dependency-injection-friendly
 * Secure by default, unsecure if needed
