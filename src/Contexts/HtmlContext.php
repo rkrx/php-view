@@ -2,9 +2,7 @@
 namespace Kir\View\Contexts;
 
 class HtmlContext implements Context {
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $charset;
 
 	/**

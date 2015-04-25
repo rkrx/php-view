@@ -3,41 +3,29 @@ namespace Kir\View;
 
 use Kir\View\Contexts\Context;
 use Kir\View\Contexts\HtmlContext;
-use Kir\View\Helpers\Directories;
 use Kir\View\Helpers\RecursiveStringPath;
-use Kir\View\Workers\FileWorker;
+use Kir\View\Workers\Worker;
 
 class View {
-	/**
-	 * @var Context
-	 */
+	/** @var Context */
 	private $context = null;
-
-	/**
-	 * @var mixed[]
-	 */
+	/** @var mixed[] */
 	private $vars = array();
-
-	/**
-	 * @var string
-	 */
-	private $basePath = '';
-
-	/**
-	 * @var RecursiveStringPath
-	 */
+	/** @var RecursiveStringPath */
 	private $recursive = null;
+	/** @var Worker */
+	private $worker;
 
 	/**
-	 * @param string $basePath
+	 * @param Worker $worker
 	 * @param Context $context
 	 */
-	public function __construct($basePath, Context $context = null) {
+	public function __construct(Worker $worker, Context $context = null) {
 		if($context === null) {
 			$context = new HtmlContext();
 		}
 		$this->context = $context;
-		$this->basePath = $basePath;
+		$this->worker = $worker;
 		$this->recursive = new RecursiveStringPath();
 	}
 
@@ -72,9 +60,6 @@ class View {
 	 * @return string
 	 */
 	public function render($resource, array $vars = array()) {
-		$subDir = dirname($resource);
-		$filename = basename($resource);
-		$worker = new FileWorker(Directories::concat($this->basePath, $subDir), $this->vars, $this->context, $this->recursive);
-		return $worker->render($filename, $vars);
+		return $this->worker->render($resource, $vars);
 	}
 }

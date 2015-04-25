@@ -2,34 +2,33 @@
 namespace Kir\View\Workers;
 
 use Kir\View\Contexts\Context;
+use Kir\View\Contexts\HtmlContext;
 use Kir\View\Helpers\Directories;
 use Kir\View\Helpers\RecursiveStringPath;
+use Kir\View\Workers\FileWorker\FileWorkerConfiguration;
 
-class FileWorker extends Worker {
-	/**
-	 * @var string
-	 */
+class FileWorker extends AbstractWorker {
+	/** @var string */
 	private $basePath;
-	/**
-	 * @var RecursiveStringPath
-	 */
-	private $recursive = null;
-	/**
-	 * @var Context
-	 */
-	private $context = null;
+	/** @var WorkerConfiguration */
+	private $configuration;
+	/** @var array */
+	private $fileExt;
 
 	/**
 	 * @param string $basePath
+	 * @param string $fileExt
 	 * @param array $vars
-	 * @param Context $context
-	 * @param RecursiveStringPath $recursive
+	 * @param WorkerConfiguration $configuration
 	 */
-	public function __construct($basePath, array $vars = array(), Context $context, RecursiveStringPath $recursive) {
-		parent::__construct($vars, [], $context, $recursive);
+	public function __construct($basePath, $fileExt = '.phtml', array $vars = array(), WorkerConfiguration $configuration = null) {
+		if($configuration === null) {
+			$configuration = new FileWorkerConfiguration();
+		}
+		parent::__construct($vars, [], $configuration->getContext(), $configuration->getRecursiveAccessor());
 		$this->basePath = $basePath;
-		$this->context = $context;
-		$this->recursive = $recursive;
+		$this->configuration = $configuration;
+		$this->fileExt = $fileExt;
 	}
 
 	/**
@@ -48,7 +47,11 @@ class FileWorker extends Worker {
 			$this->setVars($vars);
 			$templateFilename = Directories::concat($this->basePath, $subPath, $filename);
 			call_user_func(function () use ($templateFilename) {
-				/** @noinspection PhpIncludeInspection */
+				if(!file_exists($templateFilename)) {
+					if(file_exists($templateFilename . $this->fileExt)) {
+						$templateFilename .= $this->fileExt;
+					}
+				}
 				require $templateFilename;
 			});
 			$this->setVars($oldVars);
@@ -64,7 +67,7 @@ class FileWorker extends Worker {
 			$regions = $this->getRegions();
 			$regions['content'] = $content;
 			$layoutPath = Directories::concat($this->basePath, $subPath, $this->getLayout());
-			$worker = new FileWorker(dirname($layoutPath), $regions, $this->context, $this->recursive);
+			$worker = new FileWorker(dirname($layoutPath), $this->fileExt, $regions, $this->configuration);
 			$content = $worker->render(basename($layoutPath), $regions);
 		}
 		return $content;
