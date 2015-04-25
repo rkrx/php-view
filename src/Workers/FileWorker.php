@@ -82,9 +82,10 @@ class FileWorker extends AbstractWorker {
 		if($this->getLayout()) {
 			$regions = $this->getRegions();
 			$regions['content'] = $content;
-			list($layout, $layoutVars) = $this->getLayout();
+			$layoutResource = $this->getLayout();
+			$layoutVars = $this->getLayoutVars();
 			$vars = array_merge($regions, $layoutVars);
-			$content = $this->render($layout, $vars);
+			$content = $this->render($layoutResource, $vars);
 		}
 		return $content;
 	}
