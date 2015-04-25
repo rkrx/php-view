@@ -51,6 +51,7 @@ class RecursiveArrayPath {
 	 */
 	public static function set($array, array $path, $value) {
 		$key = array_shift($path);
+		$data = [];
 		if (!array_key_exists($key, $array)) {
 			$data[$key] = array();
 		}

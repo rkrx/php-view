@@ -1,10 +1,7 @@
 <?php
 namespace Kir\View\Workers;
 
-use Kir\View\Contexts\Context;
-use Kir\View\Contexts\HtmlContext;
 use Kir\View\Helpers\Directories;
-use Kir\View\Helpers\RecursiveStringPath;
 use Kir\View\Workers\FileWorker\FileWorkerConfiguration;
 
 class FileWorker extends AbstractWorker {

@@ -1,6 +1,9 @@
 php-view
 ========
 
+[![Build Status](https://travis-ci.org/rkrx/php-view.svg?branch=master)](https://travis-ci.org/rkrx/php-view)
+
+
 More secure and easy to use templating system for php5.4+. 
 
 Designgoals: 

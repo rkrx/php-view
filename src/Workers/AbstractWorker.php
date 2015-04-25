@@ -1,19 +1,14 @@
 <?php
 namespace Kir\View\Workers;
 
-use Kir\View\Contexts\Context;
-use Kir\View\Helpers\RecursiveStringPath;
-
 abstract class AbstractWorker implements Worker {
 	/** @var array */
 	private $vars = array();
-	/** @var string */
+	/** @var array */
 	private $layout = null;
 	/** @var array */
 	private $regions = array();
-	/**
-	 * @var WorkerConfiguration
-	 */
+	/** @var WorkerConfiguration */
 	private $configuration;
 
 	/**
@@ -116,7 +111,7 @@ abstract class AbstractWorker implements Worker {
 	}
 
 	/**
-	 * @return string|null
+	 * @return array|null
 	 */
 	public function getLayout() {
 		return $this->layout;
