@@ -24,19 +24,25 @@ class ObjectProxyFactory {
 
 	/**
 	 * @param object|array|bool|int|float|string|resource|null $object
-	 * @return ObjectProxy
+	 * @return ObjectProxy|mixed
 	 */
 	public function create($object) {
-		$proxy = null;
-		if(is_scalar($object)) {
-			$proxy = $this->context->escape($object);
+		if($object === null) {
+			$proxy = '';
+		} elseif(is_resource($object)) {
+			$proxy = $object;
+		} elseif(is_object($object)) {
+			if(!is_object($object)) {
+				$object = (object) $object;
+			}
+			$proxy = new ObjectProxy($object, $this);
 		} elseif(is_array($object) || $object instanceof Traversable) {
 			$proxy = array();
 			foreach($object as $key => $value) {
 				$proxy[$key] = $this->create($value);
 			}
 		} else {
-			$proxy = new ObjectProxy($object, $this);
+			$proxy = $this->context->escape($object);
 		}
 		return $proxy;
 

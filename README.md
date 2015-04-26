@@ -21,7 +21,20 @@ index.phtml
 ```php
 <?php /* @var \View\Workers\Worker $this */ ?>
 <?php /* @var \Some\Name\Spaced\Object $obj */ ?>
-<?php $obj = $this->getObject('obj') ?>
+<?php $obj = $this->get('obj') ?>
+
+<div><?= $obj->getName() ?></div>
+```
+
+## Enable string-escapting even for objects through proxies
+
+Instead of using $renderer->get('obj'), just use  $renderer->getObject('obj').
+
+index.phtml
+```php
+<?php /* @var \View\Workers\Worker $this */ ?>
+<?php /* @var \Some\Name\Spaced\Object $obj */ ?>
+<?php $obj = $this->getString('obj') ?>
 
 <div><?= $obj->getName() ?></div>
 ```
