@@ -1,8 +1,9 @@
 <?php
-namespace Kir\View\Workers;
+namespace View\Workers;
 
-use Kir\View\Contexts\Context;
-use Kir\View\Helpers\RecursiveStringPath;
+use View\Contexts\Context;
+use View\Helpers\RecursiveStringPath;
+use View\Proxying\ObjectProxyFactory;
 
 interface WorkerConfiguration {
 	/**
@@ -14,4 +15,9 @@ interface WorkerConfiguration {
 	 * @return RecursiveStringPath
 	 */
 	public function getRecursiveAccessor();
+
+	/**
+	 * @return ObjectProxyFactory
+	 */
+	public function getObjectProxyFactory();
 }

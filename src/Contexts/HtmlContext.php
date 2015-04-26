@@ -1,5 +1,5 @@
 <?php
-namespace Kir\View\Contexts;
+namespace View\Contexts;
 
 class HtmlContext implements Context {
 	/** @var string */
@@ -8,7 +8,7 @@ class HtmlContext implements Context {
 	/**
 	 * @param string $charset
 	 */
-	public function __construct($charset='utf8') {
+	public function __construct($charset='utf-8') {
 		$this->charset = $charset;
 	}
 

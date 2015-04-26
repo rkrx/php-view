@@ -1,8 +1,8 @@
 <?php
-namespace Kir\View\Workers;
+namespace View\Workers;
 
-use Kir\View\Helpers\Directories;
-use Kir\View\Workers\FileWorker\FileWorkerConfiguration;
+use View\Helpers\Directories;
+use View\Workers\FileWorker\FileWorkerConfiguration;
 
 class FileWorker extends AbstractWorker {
 	/** @var string */
@@ -82,7 +82,8 @@ class FileWorker extends AbstractWorker {
 			$layoutResource = $this->getLayout();
 			$layoutVars = $this->getLayoutVars();
 			$vars = array_merge($regions, $layoutVars);
-			$content = $this->render($layoutResource, $vars);
+			$worker = new FileWorker($this->basePath, $this->fileExt, [], $this->getConfiguration());
+			$content = $worker->getContent($layoutResource, $vars);
 		}
 		return $content;
 	}

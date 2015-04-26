@@ -8,7 +8,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Kir\\View\\": "src/"
+			"View\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"View\\": ["src/", "tests/"]
 		}
 	}
 }

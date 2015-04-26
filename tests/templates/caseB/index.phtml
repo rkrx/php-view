@@ -1,0 +1,8 @@
+<?php /* @var \View\Workers\Worker $this */ ?>
+<?php $obj = $this->getObject('obj') ?>
+
+<?php if($this->getStr('mode') === 'esc'): ?>
+	<?= $obj ?>
+<?php else: ?>
+	<?= $this->unesc($obj) ?>
+<?php endif ?>

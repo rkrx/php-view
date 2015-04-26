@@ -1,5 +1,5 @@
 <?php
-namespace Kir\View\Contexts;
+namespace View\Contexts;
 
 interface Context {
 	/**

@@ -1,5 +1,5 @@
 <?php
-namespace Kir\View\Helpers;
+namespace View\Helpers;
 
 class Directories {
 	/**

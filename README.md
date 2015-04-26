@@ -11,3 +11,41 @@ Design goals:
 * Interface-driven and dependency-injection-friendly
 * Secure by default, unsecure if needed
 * Lightweight, easy to understand and stable
+* No extra scripting language. Use PHP to write templates.
+
+## Use typehinting
+
+In PHP-Templates, you can use typehinting which is recognized by IDEs like PHPStorm, ZendStudio or PDT (and maybe others). 
+
+index.phtml
+```php
+<?php /* @var \View\Workers\Worker $this */ ?>
+<?php /* @var \Some\Name\Spaced\Object $obj */ ?>
+<?php $obj = $this->getObject('obj') ?>
+
+<div><?= $obj->getName() ?></div>
+```
+
+## Layout-Support
+
+index.phtml
+```php
+<?php /* @var \View\Workers\Worker $this */ ?>
+
+<?php $this->layout('layout', ['title' => 'My Site']) ?>
+```
+
+layout.phtml
+```php
+<?php /* @var \View\Workers\Worker $this */ ?>
+
+<html>
+	<head>
+		<title>MySite<?php if($this->has('title')): ?> - <?= $this->getString('title') ?><?php endif ?></title>
+	</head>
+	<body>
+		<?php $this->get('content') ?>
+	</body>
+</html>
+```
+

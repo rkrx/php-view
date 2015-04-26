@@ -1,9 +1,10 @@
 <?php
-namespace Kir\View\Workers;
+namespace View\Workers;
 
 use Exception;
 use Generator;
 use Traversable;
+use View\Proxying\ObjectProxy;
 
 abstract class AbstractWorker implements Worker {
 	/** @var array */
@@ -108,11 +109,36 @@ abstract class AbstractWorker implements Worker {
 			return $default;
 		}
 		$value = $this->get($key);
-		$type = get_class($value);
-		if(!is_array($value) && !$value instanceof Traversable && $type !== 'Generator') {
+		if(!is_array($value) && !$value instanceof Traversable) {
 			$value = array();
 		}
 		return $value;
+	}
+
+	/**
+	 * @param $key
+	 * @return ObjectProxy|null
+	 */
+	public function getObject($key) {
+		$factory = $this->configuration->getObjectProxyFactory();
+		$object = $this->get($key);
+		return $factory->create($object);
+	}
+
+	/**
+	 * @param string $value
+	 * @return string
+	 */
+	public function esc($value) {
+		return $this->configuration->getContext()->escape($value);
+	}
+
+	/**
+	 * @param string $value
+	 * @return string
+	 */
+	public function unesc($value) {
+		return $this->configuration->getContext()->unescape($value);
 	}
 
 	/**

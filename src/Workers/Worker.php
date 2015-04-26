@@ -1,7 +1,8 @@
 <?php
-namespace Kir\View\Workers;
+namespace View\Workers;
 
 use Exception;
+use View\Proxying\ObjectProxy;
 
 interface Worker {
 	/**
@@ -51,6 +52,24 @@ interface Worker {
 	 * @return array|\Generator|\Traversable
 	 */
 	public function getArray($key, $default = '');
+
+	/**
+	 * @param $key
+	 * @return ObjectProxy|null
+	 */
+	public function getObject($key);
+
+	/**
+	 * @param string $value
+	 * @return string
+	 */
+	public function esc($value);
+
+	/**
+	 * @param string $value
+	 * @return string
+	 */
+	public function unesc($value);
 
 	/**
 	 * @return string|null

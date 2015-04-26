@@ -1,12 +1,12 @@
 <?php
-namespace Kir\View;
+namespace View;
 
-use Kir\View\Contexts\Context;
-use Kir\View\Contexts\HtmlContext;
-use Kir\View\Helpers\RecursiveStringPath;
-use Kir\View\Workers\Worker;
+use View\Contexts\Context;
+use View\Contexts\HtmlContext;
+use View\Helpers\RecursiveStringPath;
+use View\Workers\Worker;
 
-class View {
+class Renderer {
 	/** @var Context */
 	private $context = null;
 	/** @var mixed[] */
@@ -60,6 +60,7 @@ class View {
 	 * @return string
 	 */
 	public function render($resource, array $vars = array()) {
+		$vars = array_merge($this->vars, $vars);
 		return $this->worker->render($resource, $vars);
 	}
 }
