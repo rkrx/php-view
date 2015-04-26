@@ -26,7 +26,7 @@ index.phtml
 <div><?= $obj->getName() ?></div>
 ```
 
-## Enable string-escapting even for objects through proxies
+## Enable escaping even for objects and method-calls
 
 Instead of using $renderer->get('obj'), just use  $renderer->getObject('obj').
 
