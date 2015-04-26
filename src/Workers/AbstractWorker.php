@@ -1,6 +1,7 @@
 <?php
 namespace Kir\View\Workers;
 
+use Exception;
 use Generator;
 use Traversable;
 
@@ -100,7 +101,7 @@ abstract class AbstractWorker implements Worker {
 	/**
 	 * @param string $key
 	 * @param mixed $default
-	 * @return array|\Generator|\Traversable
+	 * @return array|Generator|Traversable
 	 */
 	public function getArray($key, $default = '') {
 		if(!$this->has($key)) {
@@ -218,7 +219,7 @@ abstract class AbstractWorker implements Worker {
 	/**
 	 * @param string $resource
 	 * @param array $vars
-	 * @throws \Exception
+	 * @throws Exception
 	 * @return string
 	 */
 	abstract public function render($resource, array $vars = array());
