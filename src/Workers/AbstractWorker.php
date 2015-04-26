@@ -108,7 +108,8 @@ abstract class AbstractWorker implements Worker {
 			return $default;
 		}
 		$value = $this->get($key);
-		if(!is_array($value) && !$value instanceof Traversable && !$value instanceof Generator) {
+		$type = get_class($value);
+		if(!is_array($value) && !$value instanceof Traversable && $type !== 'Generator') {
 			$value = array();
 		}
 		return $value;
