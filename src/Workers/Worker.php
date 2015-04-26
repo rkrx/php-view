@@ -55,7 +55,7 @@ interface Worker {
 
 	/**
 	 * @param $key
-	 * @return ObjectProxy|null
+	 * @return ObjectProxy|mixed
 	 */
 	public function getObject($key);
 
