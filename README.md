@@ -46,6 +46,12 @@ index.phtml
 <?php /* @var \View\Workers\Worker $this */ ?>
 
 <?php $this->layout('layout', ['title' => 'My Site']) ?>
+
+This will be part of the region "content".
+
+<?php $this->region('left') ?>
+This will be part of the region "left".
+<?php $this->end() ?>
 ```
 
 layout.phtml
@@ -57,7 +63,12 @@ layout.phtml
 		<title>MySite<?php if($this->has('title')): ?> - <?= $this->getString('title') ?><?php endif ?></title>
 	</head>
 	<body>
-		<?php $this->get('content') ?>
+		<div id="content">
+			<?php $this->get('content') ?>
+		</div>
+		<div id="left">
+			<?php $this->get('left') ?>
+		</div>
 	</body>
 </html>
 ```
