@@ -34,7 +34,7 @@ index.phtml
 ```php
 <?php /* @var \View\Workers\Worker $this */ ?>
 <?php /* @var \Some\Name\Spaced\Object $obj */ ?>
-<?php $obj = $this->getString('obj') ?>
+<?php $obj = $this->getObject('obj') ?>
 
 <div><?= $obj->getName() ?></div>
 ```
