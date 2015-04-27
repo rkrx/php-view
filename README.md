@@ -64,10 +64,10 @@ layout.phtml
 	</head>
 	<body>
 		<div id="content">
-			<?php $this->get('content') ?>
+			<?= $this->get('content') ?>
 		</div>
 		<div id="left">
-			<?php $this->get('left') ?>
+			<?= $this->get('left') ?>
 		</div>
 	</body>
 </html>
