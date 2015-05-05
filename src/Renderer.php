@@ -1,32 +1,19 @@
 <?php
 namespace View;
 
-use View\Contexts\Context;
-use View\Contexts\HtmlContext;
-use View\Helpers\RecursiveStringPath;
 use View\Workers\Worker;
 
 class Renderer {
-	/** @var Context */
-	private $context = null;
 	/** @var mixed[] */
 	private $vars = array();
-	/** @var RecursiveStringPath */
-	private $recursive = null;
 	/** @var Worker */
 	private $worker;
 
 	/**
 	 * @param Worker $worker
-	 * @param Context $context
 	 */
-	public function __construct(Worker $worker, Context $context = null) {
-		if($context === null) {
-			$context = new HtmlContext();
-		}
-		$this->context = $context;
+	public function __construct(Worker $worker) {
 		$this->worker = $worker;
-		$this->recursive = new RecursiveStringPath();
 	}
 
 	/**

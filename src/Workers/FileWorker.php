@@ -6,8 +6,6 @@ use View\Workers\FileWorker\FileWorkerConfiguration;
 
 class FileWorker extends AbstractWorker {
 	/** @var string */
-	private $basePath;
-	/** @var string */
 	private $currentWorkDir;
 	/** @var string */
 	private $fileExt;
@@ -23,7 +21,6 @@ class FileWorker extends AbstractWorker {
 			$configuration = new FileWorkerConfiguration();
 		}
 		parent::__construct($vars, [], $configuration);
-		$this->basePath = $basePath;
 		$this->currentWorkDir = $basePath;
 		$this->fileExt = $fileExt;
 	}

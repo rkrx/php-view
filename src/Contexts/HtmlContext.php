@@ -8,7 +8,7 @@ class HtmlContext implements Context {
 	/**
 	 * @param string $charset
 	 */
-	public function __construct($charset='utf-8') {
+	public function __construct($charset = 'utf-8') {
 		$this->charset = $charset;
 	}
 
