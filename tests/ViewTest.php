@@ -33,4 +33,12 @@ class ViewTest extends \PHPUnit_Framework_TestCase {
 		$content = $view->render('index');
 		$this->assertEquals('Jane "Doe" <j.doe@example.org>', trim($content));
 	}
+
+	/**
+	 */
+	public function testRelativeDerectories() {
+		$view = new Renderer(new FileWorker(__DIR__.'/templates/caseC'));
+		$content = $view->render('subdir/index');
+		$this->assertEquals('[Hello World](Hello World)', trim($content));
+	}
 }

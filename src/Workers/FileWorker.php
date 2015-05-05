@@ -8,6 +8,8 @@ class FileWorker extends AbstractWorker {
 	/** @var string */
 	private $basePath;
 	/** @var string */
+	private $currentWorkDir;
+	/** @var string */
 	private $fileExt;
 
 	/**
@@ -22,6 +24,7 @@ class FileWorker extends AbstractWorker {
 		}
 		parent::__construct($vars, [], $configuration);
 		$this->basePath = $basePath;
+		$this->currentWorkDir = $basePath;
 		$this->fileExt = $fileExt;
 	}
 
@@ -32,7 +35,7 @@ class FileWorker extends AbstractWorker {
 	 * @return string
 	 */
 	public function render($resource, array $vars = array()) {
-		$worker = new FileWorker($this->basePath, $this->fileExt, $this->getVars(), $this->getConfiguration());
+		$worker = new FileWorker($this->currentWorkDir, $this->fileExt, $this->getVars(), $this->getConfiguration());
 		return $worker->getContent($resource, $vars);
 	}
 
@@ -46,11 +49,12 @@ class FileWorker extends AbstractWorker {
 		$oldVars = $this->getVars();
 		$subPath = dirname($resource);
 		$filename = basename($resource);
+		$this->currentWorkDir = Directories::concat($this->currentWorkDir, $subPath);
 		try {
 			ob_start();
 			$vars = array_merge($oldVars, $vars);
 			$this->setVars($vars);
-			$templateFilename = Directories::concat($this->basePath, $subPath, $filename);
+			$templateFilename = Directories::concat($this->currentWorkDir, $filename);
 			if(!file_exists($templateFilename)) {
 				if(file_exists($templateFilename . $this->fileExt)) {
 					$templateFilename .= $this->fileExt;
@@ -82,7 +86,7 @@ class FileWorker extends AbstractWorker {
 			$layoutResource = $this->getLayout();
 			$layoutVars = $this->getLayoutVars();
 			$vars = array_merge($regions, $layoutVars);
-			$worker = new FileWorker($this->basePath, $this->fileExt, [], $this->getConfiguration());
+			$worker = new FileWorker($this->currentWorkDir, $this->fileExt, [], $this->getConfiguration());
 			$content = $worker->getContent($layoutResource, $vars);
 		}
 		return $content;
