@@ -1,6 +1,7 @@
 php-view
 ========
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/ba0cd34d-fdd5-41d4-933f-ccce91693c9c/mini.png)](https://insight.sensiolabs.com/projects/ba0cd34d-fdd5-41d4-933f-ccce91693c9c)
 [![Build Status](https://travis-ci.org/rkrx/php-view.svg?branch=master)](https://travis-ci.org/rkrx/php-view)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rkrx/php-view/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rkrx/php-view/?branch=master)
 

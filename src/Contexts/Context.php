@@ -13,4 +13,4 @@ interface Context {
 	 * @return string
 	 */
 	public function unescape($value);
-} 
+}

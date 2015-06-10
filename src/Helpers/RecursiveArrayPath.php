@@ -69,7 +69,7 @@ class RecursiveArrayPath {
 	 * @return mixed
 	 */
 	public static function del($array, array $path) {
-		while (count($path)) { // Only try this while a valid path is given
+		while (count($path)) { // Try as long as a valid path is given
 			$key = array_shift($path); // Get the current key
 			if(array_key_exists($key, $array)) { // If the current key is present in the current recursion-level...
 				if(count($path)) { // After involving array_shift, the path could now be empty. If not...
