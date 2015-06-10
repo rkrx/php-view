@@ -24,7 +24,6 @@ class FileViewFactory implements ViewFactory {
 	 * @param array $vars
 	 * @param WorkerConfiguration $configuration
 	 * @param Context $context
-	 * @internal param Worker $worker
 	 */
 	public function __construct($basePath, $fileExt = '.phtml', array $vars = array(), WorkerConfiguration $configuration = null, Context $context = null) {
 		$this->basePath = $basePath;
