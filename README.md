@@ -41,6 +41,7 @@ class MyCtrl {
 	}
 
 	/**
+	 * @return string
 	 */
 	public function someAction() {
 		$content = $this->viewFactory->create('module')
