@@ -14,6 +14,44 @@ Design goals:
 * Lightweight, easy to understand and stable
 * No extra scripting language. Use PHP to write templates.
 
+## Jumpstart
+
+You will need this somewhere to convert a template-file into a string:
+
+```php
+$factory = new FileViewFactory(__DIR__.'/path/to/my/template/folder');
+$renderer = $factory->create('module');
+$renderer->add('myVar', 1234);
+$content = $renderer->render('action');
+echo $content;
+```
+
+`FileViewFactory` implements an interface called `ViewFactory`. You can use this interface to Build your very own Factories that create different renderers and so on. This is especially useful, if you need a way to change the change the implementation some day. This is also useful it you use a Dependency Injection Container to wire your components together:
+
+```php
+class MyCtrl {
+	/** @var ViewFactory */
+	private $viewFactory;
+
+	/**
+	 * @param ViewFactory $viewFactory
+	 */
+	public function __construct(ViewFactory $viewFactory) {
+		$this->viewFactory = $viewFactory;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function someAction() {
+		$content = $this->viewFactory->create('module')
+		->add('myVar', 1234)
+		->render('action');
+		return $content;
+	}
+}
+```
+
 ## Use typehinting
 
 In PHP-Templates, you can use typehinting which is recognized by IDEs like PHPStorm, ZendStudio or PDT (and maybe others). 
