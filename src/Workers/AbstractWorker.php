@@ -4,6 +4,7 @@ namespace View\Workers;
 use Exception;
 use Generator;
 use Traversable;
+use View\Proxying\ArrayProxy;
 use View\Proxying\ObjectProxy;
 
 abstract class AbstractWorker implements Worker {
@@ -110,9 +111,9 @@ abstract class AbstractWorker implements Worker {
 		}
 		$value = $this->get($key);
 		if(!is_array($value) && !$value instanceof Traversable) {
-			$value = array();
+			$value = [];
 		}
-		return $value;
+		return new ArrayProxy($value, $this->configuration->getObjectProxyFactory());
 	}
 
 	/**

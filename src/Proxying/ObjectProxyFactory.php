@@ -37,14 +37,10 @@ class ObjectProxyFactory {
 			}
 			$proxy = new ObjectProxy($object, $this);
 		} elseif(is_array($object) || $object instanceof Traversable) {
-			$proxy = array();
-			foreach($object as $key => $value) {
-				$proxy[$key] = $this->create($value);
-			}
+			$proxy = new ArrayProxy($object, $this);
 		} else {
 			$proxy = $this->context->escape($object);
 		}
 		return $proxy;
-
 	}
 }
