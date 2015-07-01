@@ -52,10 +52,8 @@ class FileWorker extends AbstractWorker {
 			$vars = array_merge($oldVars, $vars);
 			$this->setVars($vars);
 			$templateFilename = Directories::concat($this->currentWorkDir, $filename);
-			if(!file_exists($templateFilename)) {
-				if(file_exists($templateFilename . $this->fileExt)) {
-					$templateFilename .= $this->fileExt;
-				}
+			if(is_file($templateFilename . $this->fileExt)) {
+				$templateFilename .= $this->fileExt;
 			}
 			call_user_func(function () use ($templateFilename) {
 				require $templateFilename;
