@@ -1,6 +1,7 @@
 <?php
 namespace View\Workers;
 
+use ArrayObject;
 use Exception;
 use Generator;
 use Traversable;
@@ -106,6 +107,25 @@ abstract class AbstractWorker implements Worker {
 	 * @return array|Generator|Traversable
 	 */
 	public function getArray($key, $default = '') {
+		if(!$this->has($key)) {
+			return $default;
+		}
+		$value = $this->get($key);
+		if($value instanceof ArrayObject) {
+			$value = $value->getArrayCopy();
+		}
+		if(!is_array($value)) {
+			$value = [];
+		}
+		return $value;
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $default
+	 * @return array|Generator|Traversable
+	 */
+	public function getArrayObj($key, $default = '') {
 		if(!$this->has($key)) {
 			return $default;
 		}
