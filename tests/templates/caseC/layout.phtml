@@ -1,2 +1,2 @@
 <?php /* @var \View\Workers\Worker $this */ ?>
-<?= trim($this->get('content')) ?>[<?= trim($this->get('test')) ?>](<?= trim($this->render('base.phtml')) ?>)
+<?= trim($this->getRegion('content')) ?>[<?= trim($this->getRegion('test')) ?>](<?= trim($this->render('base.phtml')) ?>)

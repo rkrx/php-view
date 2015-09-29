@@ -5,6 +5,7 @@ use ArrayObject;
 use Exception;
 use Generator;
 use Traversable;
+use View\Helpers\StringBucket;
 use View\Proxying\ArrayProxy;
 use View\Proxying\ObjectProxy;
 
@@ -192,16 +193,25 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function getRegion($name) {
 		if(array_key_exists($name, $this->regions)) {
-			return $this->getRegion($name);
+			return (string) $this->regions[$name];
 		}
 		return '';
 	}
 
 	/**
-	 * @return string[]
+	 * @return StringBucket[]
 	 */
 	public function getRegions() {
 		return $this->regions;
+	}
+
+	/**
+	 * @param array[] $regions
+	 * @return $this
+	 */
+	protected function setRegions(array $regions) {
+		$this->regions = $regions;
+		return $this;
 	}
 
 	/**
@@ -210,7 +220,7 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function region($name) {
 		ob_start(function ($content) use ($name) {
-			$this->regions[$name] = $content;
+			$this->regions[$name] = new StringBucket($content);
 		});
 		return $this;
 	}
@@ -219,7 +229,7 @@ abstract class AbstractWorker implements Worker {
 	 * @param string $name
 	 * @return $this
 	 */
-	public function placeholder($name) {
+	public function getRegionOrPlaceholder($name) {
 		if(!array_key_exists($name, $this->regions)) {
 			ob_start(function ($content) {
 				return $content;

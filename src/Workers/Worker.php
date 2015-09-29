@@ -109,7 +109,7 @@ interface Worker {
 	 * @param string $name
 	 * @return $this
 	 */
-	public function placeholder($name);
+	public function getRegionOrPlaceholder($name);
 
 	/**
 	 * @return $this

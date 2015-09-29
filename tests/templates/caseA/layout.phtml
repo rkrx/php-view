@@ -1,1 +1,2 @@
-<?= trim($this->get('content')) ?>[<?= trim($this->get('test')) ?>]
+<?php /* @var \View\Workers\Worker $this */ ?>
+<?= trim($this->getRegion('content')) ?>[<?= trim($this->getRegion('test')) ?>]

@@ -1,7 +1,10 @@
 <?php
 namespace View\Workers;
 
+use Exception;
 use View\Helpers\Directories;
+use View\Helpers\ObRecording\ObRecorder;
+use View\Helpers\ObRecording\ObRecorder54;
 use View\Workers\FileWorker\FileWorkerConfiguration;
 
 class FileWorker extends AbstractWorker {
@@ -33,40 +36,43 @@ class FileWorker extends AbstractWorker {
 	 */
 	public function render($resource, array $vars = array()) {
 		$worker = new FileWorker($this->currentWorkDir, $this->fileExt, $this->getVars(), $this->getConfiguration());
-		return $worker->getContent($resource, $vars);
+		return $worker->getContent($resource, $vars, $this->getRegions());
 	}
 
 	/**
 	 * @param string $resource
 	 * @param array $vars
+	 * @param array $regions
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function getContent($resource, array $vars = array()) {
-		$oldVars = $this->getVars();
+	public function getContent($resource, array $vars = array(), array $regions = array()) {
+		list($oldVars, $oldRegions) = [$this->getVars(), $this->getRegions()];
 		$subPath = dirname($resource) !== '.' ? dirname($resource) : '';
 		$filename = basename($resource);
 		$this->currentWorkDir = Directories::concat($this->currentWorkDir, $subPath);
+
+		$vars = array_merge($oldVars, $vars);
+		$regions = array_merge($oldRegions, $regions);
+		$this->setVars($vars);
+		$this->setRegions($regions);
+
 		try {
-			ob_start();
-			$vars = array_merge($oldVars, $vars);
-			$this->setVars($vars);
-			$templateFilename = Directories::concat($this->currentWorkDir, $filename);
-			if(is_file($templateFilename . $this->fileExt)) {
-				$templateFilename .= $this->fileExt;
-			}
-			call_user_func(function () use ($templateFilename) {
-				require $templateFilename;
+			$content = $this->obRecord(function () use ($filename) {
+				$templateFilename = Directories::concat($this->currentWorkDir, $filename);
+				if(is_file($templateFilename . $this->fileExt)) {
+					$templateFilename .= $this->fileExt;
+				}
+				call_user_func(function () use ($templateFilename) {
+					/** @noinspection PhpIncludeInspection */
+					require $templateFilename;
+				});
 			});
+			return $this->generateLayoutContent($content);
+		} finally {
 			$this->setVars($oldVars);
-		} catch (\Exception $e) {
-			$this->setVars($oldVars);
-			ob_end_clean();
-			throw $e;
+			$this->setRegions($oldRegions);
 		}
-		$content = ob_get_clean();
-		$content = $this->generateLayoutContent($content);
-		return $content;
 	}
 
 	/**
@@ -80,10 +86,25 @@ class FileWorker extends AbstractWorker {
 			$regions['content'] = $content;
 			$layoutResource = $this->getLayout();
 			$layoutVars = $this->getLayoutVars();
-			$vars = array_merge($regions, $layoutVars);
 			$worker = new FileWorker($this->currentWorkDir, $this->fileExt, [], $this->getConfiguration());
-			$content = $worker->getContent($layoutResource, $vars);
+			$content = $worker->getContent($layoutResource, $layoutVars, $regions);
 		}
 		return $content;
+	}
+
+	/**
+	 * @param callback $fn
+	 * @return string
+	 * @throws \Exception
+	 */
+	private function obRecord($fn) {
+		try {
+			ob_start();
+			call_user_func($fn);
+			return ob_get_clean();
+		} catch (Exception $e) {
+			ob_end_flush();
+			throw $e;
+		}
 	}
 }
