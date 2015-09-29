@@ -44,7 +44,7 @@ class FileWorker extends AbstractWorker {
 	 */
 	public function getContent($resource, array $vars = array()) {
 		$oldVars = $this->getVars();
-		$subPath = dirname($resource);
+		$subPath = dirname($resource) !== '.' ? dirname($resource) : '';
 		$filename = basename($resource);
 		$this->currentWorkDir = Directories::concat($this->currentWorkDir, $subPath);
 		try {
