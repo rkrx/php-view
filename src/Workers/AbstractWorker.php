@@ -229,7 +229,7 @@ abstract class AbstractWorker implements Worker {
 	 * @param string $name
 	 * @return $this
 	 */
-	public function getRegionOrPlaceholder($name) {
+	public function getRegionOr($name) {
 		if(!array_key_exists($name, $this->regions)) {
 			ob_start(function ($content) {
 				return $content;
