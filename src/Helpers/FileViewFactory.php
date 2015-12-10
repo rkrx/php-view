@@ -38,7 +38,7 @@ class FileViewFactory implements ViewFactory {
 	 * @return Renderer
 	 */
 	public function create($subDir = '') {
-		$subDir = rtrim($this->basePath, '/\\') . '/' . ltrim($subDir, '/\\');
+		$subDir = Directories::concat($this->basePath, $subDir);
 		$worker = new FileWorker($subDir, $this->fileExt, $this->vars, $this->configuration);
 		return new Renderer($worker, $this->context);
 	}
