@@ -3,8 +3,6 @@ namespace View\Workers;
 
 use Exception;
 use View\Helpers\Directories;
-use View\Helpers\ObRecording\ObRecorder;
-use View\Helpers\ObRecording\ObRecorder54;
 use View\Workers\FileWorker\FileWorkerConfiguration;
 
 class FileWorker extends AbstractWorker {
@@ -60,13 +58,16 @@ class FileWorker extends AbstractWorker {
 		try {
 			$content = $this->obRecord(function () use ($filename) {
 				$templateFilename = Directories::concat($this->currentWorkDir, $filename);
-				if(is_file($templateFilename . $this->fileExt)) {
-					$templateFilename .= $this->fileExt;
+				$templatePath = stream_resolve_include_path($templateFilename . $this->fileExt);
+				if($templatePath !== false) {
+					$templateFilename = $templatePath;
 				}
-				call_user_func(function () use ($templateFilename) {
+				$fn = function () use ($templateFilename) {
 					/** @noinspection PhpIncludeInspection */
 					require $templateFilename;
-				});
+				};
+				$fn->bindTo(new \stdClass());
+				call_user_func($fn);
 			});
 			return $this->generateLayoutContent($content);
 		} finally {
