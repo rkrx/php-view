@@ -30,6 +30,11 @@ class CallbackViewFactory implements ViewFactory {
 	 * @return Renderer
 	 */
 	public function create($baseDir = null, array $vars = []) {
+		if($baseDir === null) {
+			$baseDir = $this->baseDir;
+		} elseif($this->baseDir !== null) {
+			$baseDir = Directories::concat($this->baseDir, $baseDir);
+		}
 		return call_user_func($this->callback, $baseDir, $vars);
 	}
 

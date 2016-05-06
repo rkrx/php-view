@@ -5,14 +5,14 @@ interface ViewFactory {
 	/**
 	 * @param string $baseDir
 	 * @param array $vars
-	 * @return mixed
+	 * @return Renderer
 	 */
 	public function create($baseDir = null, array $vars = []);
 
 	/**
 	 * @param string $baseDir
 	 * @param array $vars
-	 * @return mixed
+	 * @return $this
 	 */
 	public function deriveFactory($baseDir = null, array $vars = []);
 }
