@@ -4,6 +4,7 @@ namespace View\Workers;
 use Exception;
 use View\Delegates\Delegate;
 use View\Helpers\Directories;
+use View\Helpers\ViewTryFinallySimulator;
 use View\Workers\FileWorker\FileWorkerConfiguration;
 
 class FileWorker extends AbstractWorker {
@@ -63,7 +64,7 @@ class FileWorker extends AbstractWorker {
 		$this->setVars($vars);
 		$this->setRegions($regions);
 
-		try {
+		return ViewTryFinallySimulator::tryThis(function () use ($filename, $resource, $vars) {
 			$content = $this->obRecord(function () use ($filename, $resource, $vars) {
 				$templateFilename = Directories::concat($this->currentWorkDir, $filename);
 				$templateFilename = $this->normalize($templateFilename);
@@ -88,10 +89,10 @@ class FileWorker extends AbstractWorker {
 				}
 			});
 			return $this->generateLayoutContent($content);
-		} finally {
+		}, function () use ($oldVars, $oldRegions) {
 			$this->setVars($oldVars);
 			$this->setRegions($oldRegions);
-		}
+		});
 	}
 
 	/**
