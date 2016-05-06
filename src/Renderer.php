@@ -1,9 +1,10 @@
 <?php
 namespace View;
 
+use View\Delegates\Delegate;
 use View\Workers\Worker;
 
-class Renderer {
+class Renderer implements Delegate {
 	/** @var mixed[] */
 	private $vars = array();
 	/** @var Worker */

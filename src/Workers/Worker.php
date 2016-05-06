@@ -2,9 +2,10 @@
 namespace View\Workers;
 
 use Exception;
+use View\Delegates\Delegate;
 use View\Proxying\ObjectProxy;
 
-interface Worker {
+interface Worker extends Delegate {
 	/**
 	 * @param string $key
 	 * @return bool
@@ -124,7 +125,7 @@ interface Worker {
 	public function set($key, $value);
 
 	/**
-	 * @param string $resource
+	 * @param string|callable $resource
 	 * @param array $vars
 	 * @throws Exception
 	 * @return string

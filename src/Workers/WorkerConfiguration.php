@@ -6,18 +6,12 @@ use View\Helpers\RecursiveStringPath;
 use View\Proxying\ObjectProxyFactory;
 
 interface WorkerConfiguration {
-	/**
-	 * @return Context
-	 */
+	/** @return Context */
 	public function getContext();
 
-	/**
-	 * @return RecursiveStringPath
-	 */
+	/** @return RecursiveStringPath */
 	public function getRecursiveAccessor();
 
-	/**
-	 * @return ObjectProxyFactory
-	 */
+	/** @return ObjectProxyFactory */
 	public function getObjectProxyFactory();
 }

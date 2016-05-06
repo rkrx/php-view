@@ -2,6 +2,7 @@
 namespace View\Workers;
 
 use Exception;
+use View\Delegates\Delegate;
 use View\Helpers\Directories;
 use View\Workers\FileWorker\FileWorkerConfiguration;
 
@@ -10,30 +11,37 @@ class FileWorker extends AbstractWorker {
 	private $currentWorkDir;
 	/** @var string */
 	private $fileExt;
+	/** @var Delegate */
+	private $parent;
 
 	/**
 	 * @param string $basePath
 	 * @param string $fileExt
 	 * @param array $vars
 	 * @param WorkerConfiguration $configuration
+	 * @param Delegate $parent
 	 */
-	public function __construct($basePath, $fileExt = '.phtml', array $vars = array(), WorkerConfiguration $configuration = null) {
+	public function __construct($basePath, $fileExt = null, array $vars = array(), WorkerConfiguration $configuration = null, Delegate $parent = null) {
+		if($fileExt === null)  {
+			$fileExt = '.phtml';
+		}
 		if($configuration === null) {
 			$configuration = new FileWorkerConfiguration();
 		}
 		parent::__construct($vars, [], $configuration);
 		$this->currentWorkDir = $basePath;
 		$this->fileExt = $fileExt;
+		$this->parent = $parent;
 	}
 
 	/**
-	 * @param string $resource
+	 * @param string|callable $resource
 	 * @param array $vars
 	 * @throws \Exception
 	 * @return string
 	 */
 	public function render($resource, array $vars = array()) {
-		$worker = new FileWorker($this->currentWorkDir, $this->fileExt, $this->getVars(), $this->getConfiguration());
+		$worker = new FileWorker($this->currentWorkDir, $this->fileExt, $this->getVars(), $this->getConfiguration(), $this->parent);
 		return $worker->getContent($resource, $vars, $this->getRegions());
 	}
 
@@ -56,18 +64,28 @@ class FileWorker extends AbstractWorker {
 		$this->setRegions($regions);
 
 		try {
-			$content = $this->obRecord(function () use ($filename) {
+			$content = $this->obRecord(function () use ($filename, $resource, $vars) {
 				$templateFilename = Directories::concat($this->currentWorkDir, $filename);
+				$templateFilename = $this->normalize($templateFilename);
 				$templatePath = stream_resolve_include_path($templateFilename . $this->fileExt);
+				if($templatePath === false) {
+					$templatePath = stream_resolve_include_path($templateFilename);
+				}
 				if($templatePath !== false) {
 					$templateFilename = $templatePath;
+					$fn = function () use ($templateFilename) {
+						/** @noinspection PhpIncludeInspection */
+						require $templateFilename;
+					};
+					$fn->bindTo(new \stdClass());
+					call_user_func($fn);
+				} else {
+					if($this->parent !== null) {
+						echo $this->parent->render($resource, $vars);
+					} else {
+						throw new Exception("Resource not found: {$resource}");
+					}
 				}
-				$fn = function () use ($templateFilename) {
-					/** @noinspection PhpIncludeInspection */
-					require $templateFilename;
-				};
-				$fn->bindTo(new \stdClass());
-				call_user_func($fn);
 			});
 			return $this->generateLayoutContent($content);
 		} finally {
@@ -87,7 +105,7 @@ class FileWorker extends AbstractWorker {
 			$regions['content'] = $content;
 			$layoutResource = $this->getLayout();
 			$layoutVars = $this->getLayoutVars();
-			$worker = new FileWorker($this->currentWorkDir, $this->fileExt, [], $this->getConfiguration());
+			$worker = new FileWorker($this->currentWorkDir, $this->fileExt, [], $this->getConfiguration(), $this->parent);
 			$content = $worker->getContent($layoutResource, $layoutVars, $regions);
 		}
 		return $content;
@@ -107,5 +125,33 @@ class FileWorker extends AbstractWorker {
 			ob_end_flush();
 			throw $e;
 		}
+	}
+
+	/**
+	 * @param string $templateFilename
+	 * @return string
+	 */
+	private function normalize($templateFilename) {
+		if(strpos($templateFilename, '..')) {
+			$templateFilename = strtr($templateFilename, [DIRECTORY_SEPARATOR => '/']);
+			$templateFilename = preg_replace('/\\/+/', '/', $templateFilename);
+			$parts = explode('/', $templateFilename);
+			$correctedParts = [];
+			foreach($parts as $part) {
+				if($part === '.') {
+					// Skip
+				} elseif($part === '..') {
+					if(count($correctedParts)) {
+						array_pop($correctedParts);
+					} else {
+						// Skip
+					}
+				} else {
+					$correctedParts[] = $part;
+				}
+			}
+			return join('/', $correctedParts);
+		}
+		return $templateFilename;
 	}
 }

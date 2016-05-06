@@ -275,7 +275,7 @@ abstract class AbstractWorker implements Worker {
 	}
 
 	/**
-	 * @param string $resource
+	 * @param string|callable $resource
 	 * @param array $vars
 	 * @throws Exception
 	 * @return string

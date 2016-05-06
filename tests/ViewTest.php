@@ -46,4 +46,12 @@ class ViewTest extends \PHPUnit_Framework_TestCase {
 		$content = $view->render('subdir/index');
 		$this->assertEquals('[Hello World](Hello World)', trim($content));
 	}
+
+	/**
+	 */
+	public function testDelegates() {
+		$view = new Renderer(new FileWorker('templates/caseC/subdir', null, [], null, new FileWorker('templates/caseC')));
+		$content = $view->render('index');
+		$this->assertEquals('[Hello World](Hello World)', trim($content));
+	}
 }
