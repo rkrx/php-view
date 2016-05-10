@@ -107,7 +107,7 @@ abstract class AbstractWorker implements Worker {
 	 * @param mixed $default
 	 * @return array|Generator|Traversable
 	 */
-	public function getArray($key, $default = '') {
+	public function getArray($key, $default = []) {
 		if(!$this->has($key)) {
 			return $default;
 		}
