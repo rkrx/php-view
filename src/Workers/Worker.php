@@ -2,6 +2,8 @@
 namespace View\Workers;
 
 use Exception;
+use Generator;
+use Traversable;
 use View\Delegates\Delegate;
 use View\Proxying\ObjectProxy;
 
@@ -53,6 +55,13 @@ interface Worker extends Delegate {
 	 * @return array|\Generator|\Traversable
 	 */
 	public function getArray($key, $default = []);
+
+	/**
+	 * @param string $key
+	 * @param mixed $default
+	 * @return array|Generator|Traversable
+	 */
+	public function getArrayObj($key, $default = []);
 
 	/**
 	 * @param $key
