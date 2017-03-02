@@ -3,6 +3,8 @@ namespace View\Workers;
 
 use Exception;
 use View\Delegates\Delegate;
+use View\Exceptions\ResourceNotFoundException;
+use View\Exceptions\VirtualPathNotRegisteredException;
 use View\Helpers\Directories;
 use View\Helpers\ViewTryFinallySimulator;
 use View\Workers\FileWorker\FileWorkerConfiguration;
@@ -57,7 +59,8 @@ class FileWorker extends AbstractWorker {
 		list($oldVars, $oldRegions) = [$this->getVars(), $this->getRegions()];
 		$subPath = dirname($resource) !== '.' ? dirname($resource) : '';
 		$filename = basename($resource);
-		$this->currentWorkDir = Directories::concat($this->currentWorkDir, $subPath);
+		
+		$this->currentWorkDir = $this->getCurrentWorkDir($subPath);
 
 		$vars = array_merge($oldVars, $vars);
 		$regions = array_merge($oldRegions, $regions);
@@ -84,7 +87,7 @@ class FileWorker extends AbstractWorker {
 					if($this->parent !== null) {
 						echo $this->parent->render($resource, $vars);
 					} else {
-						throw new Exception("Resource not found: {$resource}");
+						throw new ResourceNotFoundException("Resource not found: {$resource}");
 					}
 				}
 			});
@@ -154,5 +157,24 @@ class FileWorker extends AbstractWorker {
 			return join('/', $correctedParts);
 		}
 		return $templateFilename;
+	}
+	
+	/**
+	 * @param string $subPath
+	 * @return string
+	 */
+	private function getCurrentWorkDir($subPath) {
+		if(substr($subPath, 0, 1) === '@') {
+			$replace = function ($matches) {
+				$paths = $this->getConfiguration()->getPaths();
+				if(!array_key_exists($matches[2], $paths)) {
+					throw new VirtualPathNotRegisteredException("Virtual path not registered: {$matches[1]}{$matches[2]}");
+				}
+				return $paths[$matches[2]];
+			};
+			$subPath = preg_replace_callback('/^(@)([^\\/]+)/', $replace, $subPath);
+			return $subPath;
+		}
+		return Directories::concat($this->currentWorkDir, $subPath);
 	}
 }

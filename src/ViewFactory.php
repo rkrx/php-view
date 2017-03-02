@@ -3,6 +3,13 @@ namespace View;
 
 interface ViewFactory {
 	/**
+	 * @param string $name
+	 * @param string $path
+	 * @return $this
+	 */
+	public function addPath($name, $path);
+	
+	/**
 	 * @param string $baseDir
 	 * @param array $vars
 	 * @return Renderer

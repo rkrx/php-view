@@ -14,4 +14,7 @@ interface WorkerConfiguration {
 
 	/** @return ObjectProxyFactory */
 	public function getObjectProxyFactory();
+
+	/** @return array */
+	public function getPaths();
 }

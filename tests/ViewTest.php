@@ -3,6 +3,7 @@ namespace View;
 
 use View\Proxying\TestObjects\TestObj1;
 use View\Workers\FileWorker;
+use View\Workers\FileWorker\FileWorkerConfiguration;
 
 class ViewTest extends \PHPUnit_Framework_TestCase {
 	protected function setUp() {
@@ -53,5 +54,19 @@ class ViewTest extends \PHPUnit_Framework_TestCase {
 		$view = new Renderer(new FileWorker('templates/caseC/subdir', null, [], null, new FileWorker('templates/caseC')));
 		$content = $view->render('index');
 		$this->assertEquals('[Hello World](Hello World)', trim($content));
+	}
+
+	/**
+	 */
+	public function testVirtualPaths() {
+		$paths = [
+			'case-c' => __DIR__.'/templates/caseC',
+			'case-d' => __DIR__.'/templates/caseD',
+			'test' => __DIR__.'/templates/caseD',
+		];
+		$config = new FileWorkerConfiguration(null, null, null, ['paths' => $paths]);
+		$view = new Renderer(new FileWorker('', null, [], $config, new FileWorker('templates')));
+		$content = $view->render('@test/index');
+		$this->assertEquals('[Hello World](Hello World)[---]', trim($content));
 	}
 }

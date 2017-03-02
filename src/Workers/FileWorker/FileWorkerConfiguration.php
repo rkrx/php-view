@@ -14,13 +14,16 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 	private $recursiveAccessor;
 	/** @var ObjectProxyFactory */
 	private $objectProxyFactory;
-
+	/** @var array */
+	private $config;
+	
 	/**
 	 * @param Context $context
 	 * @param RecursiveStringPath $recursiveAccessor
 	 * @param ObjectProxyFactory $objectProxyFactory
+	 * @param array $config
 	 */
-	public function __construct(Context $context = null, RecursiveStringPath $recursiveAccessor = null, ObjectProxyFactory $objectProxyFactory = null) {
+	public function __construct(Context $context = null, RecursiveStringPath $recursiveAccessor = null, ObjectProxyFactory $objectProxyFactory = null, array $config = []) {
 		if($context === null) {
 			$context = new HtmlContext();
 		}
@@ -33,6 +36,7 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 		$this->context = $context;
 		$this->recursiveAccessor = $recursiveAccessor;
 		$this->objectProxyFactory = $objectProxyFactory;
+		$this->config = $config;
 	}
 
 	/**
@@ -54,5 +58,15 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 	 */
 	public function getObjectProxyFactory() {
 		return $this->objectProxyFactory;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getPaths() {
+		if(array_key_exists('paths', $this->config)) {
+			return $this->config['paths'];
+		}
+		return [];
 	}
 }
