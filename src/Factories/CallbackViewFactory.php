@@ -14,7 +14,7 @@ class CallbackViewFactory implements ViewFactory {
 	private $vars;
 	/** @var array */
 	private $config = [];
-	
+
 	/**
 	 * @param callable $callback
 	 * @param string $baseDir
@@ -27,7 +27,7 @@ class CallbackViewFactory implements ViewFactory {
 		$this->vars = $vars;
 		$this->config = array_merge(['paths' => []], $config);
 	}
-	
+
 	/**
 	 * @param string $name
 	 * @param string $path
@@ -55,7 +55,7 @@ class CallbackViewFactory implements ViewFactory {
 	/**
 	 * @param string $baseDir
 	 * @param array $vars
-	 * @return $this
+	 * @return self
 	 */
 	public function deriveFactory($baseDir = null, array $vars = []) {
 		if($baseDir === null) {
@@ -63,6 +63,6 @@ class CallbackViewFactory implements ViewFactory {
 		} elseif($this->baseDir !== null) {
 			$baseDir = Directories::concat($this->baseDir, $baseDir);
 		}
-		return new static($this->callback, $baseDir, array_merge($this->vars, $vars), $this->config);
+		return new self($this->callback, $baseDir, array_merge($this->vars, $vars), $this->config);
 	}
 }

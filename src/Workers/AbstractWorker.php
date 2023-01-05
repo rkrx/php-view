@@ -4,27 +4,29 @@ namespace View\Workers;
 use ArrayObject;
 use Exception;
 use Generator;
+use RuntimeException;
 use Traversable;
-use View\Helpers\StringBucket;
 use View\Proxying\ArrayProxy;
 use View\Proxying\ObjectProxy;
 
 abstract class AbstractWorker implements Worker {
-	/** @var array */
-	private $vars = array();
-	/** @var array */
-	private $layout = [null, []];
-	/** @var array */
-	private $regions = array();
-	/** @var WorkerConfiguration */
-	private $configuration;
+	/** @var array<string, mixed> */
+	private array $vars;
+	/** @var array{mixed, array<mixed>} */
+	private array $layout = [null, []];
+	/** @var array<string, string> */
+	private array $regions;
+	private WorkerConfiguration $configuration;
 
 	/**
-	 * @param array $vars
-	 * @param array $regions
-	 * @param WorkerConfiguration $configuration
+	 * @param array<string, mixed> $vars
+	 * @param array<string, string> $regions
+	 * @param WorkerConfiguration|null $configuration
 	 */
-	public function __construct(array $vars = array(), array $regions = array(), WorkerConfiguration $configuration) {
+	public function __construct(array $vars = [], array $regions = [], ?WorkerConfiguration $configuration = null) {
+		if($configuration === null) {
+			throw new RuntimeException('No configuration given');
+		}
 		$this->vars = $vars;
 		$this->regions = $regions;
 		$this->configuration = $configuration;
@@ -34,7 +36,7 @@ abstract class AbstractWorker implements Worker {
 	 * @param string $key
 	 * @return bool
 	 */
-	public function has($key) {
+	public function has($key): bool {
 		return $this->configuration->getRecursiveAccessor()->has($this->vars, $key);
 	}
 
@@ -199,14 +201,14 @@ abstract class AbstractWorker implements Worker {
 	}
 
 	/**
-	 * @return StringBucket[]
+	 * @return array<string, string>
 	 */
 	public function getRegions() {
 		return $this->regions;
 	}
 
 	/**
-	 * @param array[] $regions
+	 * @param array<string, string> $regions
 	 * @return $this
 	 */
 	protected function setRegions(array $regions) {
@@ -220,7 +222,7 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function region($name) {
 		ob_start(function ($content) use ($name) {
-			$this->regions[$name] = new StringBucket($content);
+			$this->regions[$name] = $content;
 		});
 		return $this;
 	}

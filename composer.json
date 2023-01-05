@@ -3,10 +3,11 @@
 	"description": "More secure and easy to use templating system for php5.4+",
 	"license": "MIT",
 	"require": {
-		"php": ">=5.4"
+		"php": ">= 7.4"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "~3.7@stable"
+		"phpunit/phpunit": "~3.7@stable",
+		"phpstan/phpstan": ">= 1.9"
 	},
 	"autoload": {
 		"psr-4": {
@@ -17,5 +18,8 @@
 		"psr-4": {
 			"View\\": ["src/", "tests/"]
 		}
+	},
+	"scripts": {
+		"phpstan": "phpstan analyse -c phpstan.neon"
 	}
 }

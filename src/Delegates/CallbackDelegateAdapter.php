@@ -6,7 +6,7 @@ class CallbackDelegateAdapter implements Delegate {
 	private $callback;
 
 	/**
-	 * @param callback $callback
+	 * @param callable $callback
 	 */
 	public function __construct($callback) {
 		$this->callback = $callback;

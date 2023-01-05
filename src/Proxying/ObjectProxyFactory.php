@@ -31,13 +31,13 @@ class ObjectProxyFactory {
 			$proxy = '';
 		} elseif(is_resource($object)) {
 			$proxy = $object;
+		} elseif(is_array($object) || $object instanceof Traversable) {
+			$proxy = new ArrayProxy($object, $this);
 		} elseif(is_object($object)) {
 			if(!is_object($object)) {
 				$object = (object) $object;
 			}
 			$proxy = new ObjectProxy($object, $this);
-		} elseif(is_array($object) || $object instanceof Traversable) {
-			$proxy = new ArrayProxy($object, $this);
 		} else {
 			$proxy = $this->context->escape($object);
 		}

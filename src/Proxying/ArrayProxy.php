@@ -4,7 +4,9 @@ namespace View\Proxying;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;
+use Generator;
 use IteratorAggregate;
+use RuntimeException;
 use Traversable;
 
 class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
@@ -17,7 +19,13 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	 * @param array|Traversable $array
 	 * @param ObjectProxyFactory $objectProxyFactory
 	 */
-	public function __construct($array = [], ObjectProxyFactory $objectProxyFactory) {
+	public function __construct($array = [], ?ObjectProxyFactory $objectProxyFactory = null) {
+		if($objectProxyFactory === null) {
+			throw new RuntimeException('No object proxy factory given');
+		}
+		if($array instanceof Generator) {
+			$array = iterator_to_array($array);
+		}
 		$this->array = $array;
 		$this->objectProxyFactory = $objectProxyFactory;
 	}
@@ -25,6 +33,7 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	/**
 	 * @return Traversable
 	 */
+	#[\ReturnTypeWillChange]
 	public function getIterator() {
 		$result = [];
 		foreach($this->getArray() as $key => $value) {
@@ -37,19 +46,21 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	 * @param mixed $offset
 	 * @return bool
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists($offset) {
-		return array_key_exists($this->array, $offset);
+		$array = $this->getArray();
+		return array_key_exists($offset, $array);
 	}
 
 	/**
 	 * @param mixed $offset
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset) {
 		$array = $this->getArray();
 		if(array_key_exists($offset, $array)) {
-			$value = $this->objectProxyFactory->create($this->array[$offset]);
-			return $value;
+			return $this->objectProxyFactory->create($this->array[$offset]);
 		}
 		return null;
 	}
@@ -59,6 +70,7 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	 * @param mixed $value
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetSet($offset, $value) {
 		$array = $this->getArray();
 		$array[$offset] = $value;
@@ -69,7 +81,7 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	 * @param mixed $offset
 	 * @return void
 	 */
-	public function offsetUnset($offset) {
+	public function offsetUnset($offset): void {
 		$array = $this->getArray();
 		unset($array[$offset]);
 		$this->array = $array;
@@ -78,7 +90,7 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	/**
 	 * @return int
 	 */
-	public function count() {
+	public function count(): int {
 		$array = $this->getArray();
 		return count($array);
 	}
@@ -95,11 +107,7 @@ class ArrayProxy implements ArrayAccess, Countable, IteratorAggregate {
 	 */
 	private function getArray() {
 		if($this->array instanceof Traversable) {
-			$tmp = [];
-			foreach($tmp as $key => $value) {
-				$tmp[$key] = $value;
-			}
-			$this->array = $tmp;
+			$this->array = iterator_to_array($this->array);
 		}
 		return $this->array;
 	}

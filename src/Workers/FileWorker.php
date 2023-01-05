@@ -43,7 +43,7 @@ class FileWorker extends AbstractWorker {
 	 * @throws \Exception
 	 * @return string
 	 */
-	public function render($resource, array $vars = array()) {
+	public function render($resource, array $vars = []) {
 		$worker = new FileWorker($this->currentWorkDir, $this->fileExt, $this->getVars(), $this->getConfiguration(), $this->parent);
 		return $worker->getContent($resource, $vars, $this->getRegions());
 	}
@@ -55,11 +55,11 @@ class FileWorker extends AbstractWorker {
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function getContent($resource, array $vars = array(), array $regions = array()) {
-		list($oldVars, $oldRegions) = [$this->getVars(), $this->getRegions()];
+	public function getContent($resource, array $vars = [], array $regions = []) {
+		[$oldVars, $oldRegions] = [$this->getVars(), $this->getRegions()];
 		$subPath = dirname($resource) !== '.' ? dirname($resource) : '';
 		$filename = basename($resource);
-		
+
 		$this->currentWorkDir = $this->getCurrentWorkDir($subPath);
 
 		$vars = array_merge($oldVars, $vars);
@@ -67,7 +67,7 @@ class FileWorker extends AbstractWorker {
 		$this->setVars($vars);
 		$this->setRegions($regions);
 
-		return ViewTryFinallySimulator::tryThis(function () use ($filename, $resource, $vars) {
+		try {
 			$content = $this->obRecord(function () use ($filename, $resource, $vars) {
 				$templateFilename = Directories::concat($this->currentWorkDir, $filename);
 				$templateFilename = $this->normalize($templateFilename);
@@ -78,7 +78,6 @@ class FileWorker extends AbstractWorker {
 				if($templatePath !== false) {
 					$templateFilename = $templatePath;
 					$fn = function () use ($templateFilename) {
-						/** @noinspection PhpIncludeInspection */
 						require $templateFilename;
 					};
 					$fn->bindTo(new \stdClass());
@@ -92,10 +91,10 @@ class FileWorker extends AbstractWorker {
 				}
 			});
 			return $this->generateLayoutContent($content);
-		}, function () use ($oldVars, $oldRegions) {
+		} finally {
 			$this->setVars($oldVars);
 			$this->setRegions($oldRegions);
-		});
+		}
 	}
 
 	/**
@@ -116,18 +115,17 @@ class FileWorker extends AbstractWorker {
 	}
 
 	/**
-	 * @param callback $fn
+	 * @param callable $fn
 	 * @return string
 	 * @throws \Exception
 	 */
 	private function obRecord($fn) {
 		try {
 			ob_start();
-			call_user_func($fn);
-			return ob_get_clean();
-		} catch (Exception $e) {
-			ob_end_flush();
-			throw $e;
+			$fn();
+			return ob_get_contents();
+		} finally {
+			ob_end_clean();
 		}
 	}
 
@@ -154,11 +152,11 @@ class FileWorker extends AbstractWorker {
 					$correctedParts[] = $part;
 				}
 			}
-			return join('/', $correctedParts);
+			return implode('/', $correctedParts);
 		}
 		return $templateFilename;
 	}
-	
+
 	/**
 	 * @param string $subPath
 	 * @return string
