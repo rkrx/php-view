@@ -24,7 +24,7 @@ class FileWorker extends AbstractWorker {
 	 * @param WorkerConfiguration $configuration
 	 * @param Delegate $parent
 	 */
-	public function __construct($basePath, $fileExt = null, array $vars = array(), WorkerConfiguration $configuration = null, Delegate $parent = null) {
+	public function __construct($basePath, $fileExt = null, array $vars = array(), ?WorkerConfiguration $configuration = null, ?Delegate $parent = null) {
 		if($fileExt === null)  {
 			$fileExt = '.phtml';
 		}
