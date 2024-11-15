@@ -23,7 +23,7 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 	 * @param ObjectProxyFactory $objectProxyFactory
 	 * @param array $config
 	 */
-	public function __construct(Context $context = null, RecursiveStringPath $recursiveAccessor = null, ObjectProxyFactory $objectProxyFactory = null, array $config = []) {
+	public function __construct(?Context $context = null, ?RecursiveStringPath $recursiveAccessor = null, ?ObjectProxyFactory $objectProxyFactory = null, array $config = []) {
 		if($context === null) {
 			$context = new HtmlContext();
 		}
