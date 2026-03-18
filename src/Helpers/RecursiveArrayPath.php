@@ -1,15 +1,15 @@
 <?php
+
 namespace View\Helpers;
 
 class RecursiveArrayPath {
 	/**
 	 * @param array $array
-	 * @param array $path
 	 * @return bool
 	 */
 	public static function has($array, array $path) {
 		$count = count($path);
-		if (!$count) {
+		if($count === 0) {
 			return false;
 		}
 		for($idx = 0; $idx < $count; $idx++) {
@@ -19,18 +19,18 @@ class RecursiveArrayPath {
 			}
 			$array = $array[$part];
 		}
+
 		return true;
 	}
 
 	/**
 	 * @param array $array
-	 * @param array $path
 	 * @param mixed $default
 	 * @return array
 	 */
 	public static function get($array, array $path, $default) {
 		$count = count($path);
-		if (!$count) {
+		if($count === 0) {
 			return $default;
 		}
 		for($idx = 0; $idx < $count; $idx++) {
@@ -40,36 +40,32 @@ class RecursiveArrayPath {
 			}
 			$array = $array[$part];
 		}
+
 		return $array;
 	}
 
 	/**
 	 * @param array $array
-	 * @param array $path
 	 * @param mixed $value
 	 * @return mixed
 	 */
 	public static function set($array, array $path, $value) {
 		$key = array_shift($path);
 		$data = [];
-		if (!array_key_exists($key, $array)) {
-			$data[$key] = array();
+		if(!array_key_exists($key, $array)) {
+			$data[$key] = [];
 		}
-		if (count($path)) {
-			$data[$key] = self::set($array[$key], $path, $value);
-		} else {
-			$data[$key] = $value;
-		}
+		$data[$key] = count($path) ? self::set($array[$key], $path, $value) : $value;
+
 		return $data;
 	}
 
 	/**
 	 * @param array $array
-	 * @param array $path
 	 * @return mixed
 	 */
 	public static function del($array, array $path) {
-		while (count($path)) { // Try as long as a valid path is given
+		while(count($path)) { // Try as long as a valid path is given
 			$key = array_shift($path); // Get the current key
 			if(array_key_exists($key, $array)) { // If the current key is present in the current recursion-level...
 				if(count($path)) { // After involving array_shift, the path could now be empty. If not...
@@ -85,6 +81,7 @@ class RecursiveArrayPath {
 				break;
 			}
 		}
+
 		return $array;
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Workers;
 
 use Exception;
@@ -93,7 +94,6 @@ interface Worker extends Delegate {
 
 	/**
 	 * @param string $layout
-	 * @param array $vars
 	 * @return $this
 	 */
 	public function layout($layout, array $vars = []);
@@ -135,9 +135,7 @@ interface Worker extends Delegate {
 
 	/**
 	 * @param string|callable $resource
-	 * @param array $vars
 	 * @throws Exception
-	 * @return string
 	 */
-	public function render($resource, array $vars = array());
+	public function render($resource, array $vars = []): string;
 }

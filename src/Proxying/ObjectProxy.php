@@ -1,20 +1,15 @@
 <?php
+
 namespace View\Proxying;
 
-class ObjectProxy {
-	/** @var object */
-	private $object;
-	/** @var ObjectProxyFactory */
-	private $objectProxyFactory;
-
+class ObjectProxy implements \Stringable {
 	/**
 	 * @param object $object
-	 * @param ObjectProxyFactory $objectProxyFactory
 	 */
-	public function __construct($object, ObjectProxyFactory $objectProxyFactory) {
-		$this->object = $object;
-		$this->objectProxyFactory = $objectProxyFactory;
-	}
+	public function __construct(
+		private object $object,
+		private readonly ObjectProxyFactory $objectProxyFactory
+	) {}
 
 	/**
 	 * @param string $name
@@ -22,8 +17,8 @@ class ObjectProxy {
 	 */
 	public function __get($name) {
 		$value = $this->object->{$name};
-		$value = $this->objectProxyFactory->create($value);
-		return $value;
+
+		return $this->objectProxyFactory->create($value);
 	}
 
 	/**
@@ -36,13 +31,12 @@ class ObjectProxy {
 
 	/**
 	 * @param string $name
-	 * @param array $params
 	 * @return mixed|ObjectProxy
 	 */
 	public function __call($name, array $params) {
 		$value = call_user_func_array([$this->object, $name], $params);
-		$value = $this->objectProxyFactory->create($value);
-		return $value;
+
+		return $this->objectProxyFactory->create($value);
 	}
 
 	/**
@@ -50,16 +44,13 @@ class ObjectProxy {
 	 */
 	public function __invoke() {
 		$value = $this->object->__invoke();
-		$value = $this->objectProxyFactory->create($value);
-		return $value;
+
+		return $this->objectProxyFactory->create($value);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function __toString() {
+	public function __toString(): string {
 		$value = $this->object->__toString();
-		$value = $this->objectProxyFactory->getContext()->escape($value);
-		return $value;
+
+		return $this->objectProxyFactory->getContext()->escape($value);
 	}
 }

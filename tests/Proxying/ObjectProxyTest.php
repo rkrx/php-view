@@ -1,12 +1,13 @@
 <?php
 namespace View\Proxying;
 
+use PHPUnit\Framework\TestCase;
 use View\Contexts\HtmlContext;
 use View\Proxying\TestObjects\TestObj1;
 use View\Proxying\TestObjects\TestObj2;
 
-class ObjectProxyTest extends \PHPUnit_Framework_TestCase {
-	public function testMethodCalls() {
+class ObjectProxyTest extends TestCase {
+	public function testMethodCalls(): void {
 		$testobj = new TestObj1();
 		$context = new HtmlContext();
 		$factory = new ObjectProxyFactory($context);
@@ -14,13 +15,13 @@ class ObjectProxyTest extends \PHPUnit_Framework_TestCase {
 		/** @var TestObj1 $proxy */
 		$proxy = new ObjectProxy($testobj, $factory);
 
-		$this->assertEquals('Jane &quot;Doe&quot;', $proxy->getName());
-		$this->assertEquals('Jane Doe &lt;j.doe@example.org&gt;', $proxy->getEmailWithName());
-		$this->assertEquals('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', (string) $proxy);
-		$this->assertEquals('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', $proxy());
+		$this->assertSame('Jane &quot;Doe&quot;', $proxy->getName());
+		$this->assertSame('Jane Doe &lt;j.doe@example.org&gt;', $proxy->getEmailWithName());
+		$this->assertSame('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', (string) $proxy);
+		$this->assertSame('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', $proxy());
 	}
 
-	public function testWalkThroughStructures() {
+	public function testWalkThroughStructures(): void {
 		$testobj = new TestObj2();
 		$context = new HtmlContext();
 		$factory = new ObjectProxyFactory($context);
@@ -31,10 +32,10 @@ class ObjectProxyTest extends \PHPUnit_Framework_TestCase {
 		$array = $proxy->getObjectsWithoutKeys();
 		foreach(range(0, 3) as $key) {
 			$testObj = $array[$key];
-			$this->assertEquals('Jane &quot;Doe&quot;', $testObj->getName());
-			$this->assertEquals('Jane Doe &lt;j.doe@example.org&gt;', $testObj->getEmailWithName());
-			$this->assertEquals('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', (string) $testObj);
-			$this->assertEquals('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', $testObj());
+			$this->assertSame('Jane &quot;Doe&quot;', $testObj->getName());
+			$this->assertSame('Jane Doe &lt;j.doe@example.org&gt;', $testObj->getEmailWithName());
+			$this->assertSame('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', (string) $testObj);
+			$this->assertSame('Jane &quot;Doe&quot; &lt;j.doe@example.org&gt;', $testObj());
 		}
 	}
 }

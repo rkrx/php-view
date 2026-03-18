@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Exceptions;
 
 use RuntimeException;

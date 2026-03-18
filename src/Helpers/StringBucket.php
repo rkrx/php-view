@@ -1,21 +1,17 @@
 <?php
+
 namespace View\Helpers;
 
-class StringBucket {
-	/** @var string */
-	private $data;
+use Stringable;
 
+class StringBucket implements \Stringable {
 	/**
-	 * @param $data
+	 * @param string|Stringable $data
+	 * @param string $data
 	 */
-	public function __construct($data) {
-		$this->data = $data;
-	}
+	public function __construct(private bool|int|float|string|Stringable $data) {}
 
-	/**
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->data;
+	public function __toString(): string {
+		return (string) $this->data;
 	}
 }

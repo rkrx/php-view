@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Workers;
 
 use ArrayObject;
@@ -10,31 +11,23 @@ use View\Proxying\ArrayProxy;
 use View\Proxying\ObjectProxy;
 
 abstract class AbstractWorker implements Worker {
-	/** @var array<string, mixed> */
-	private array $vars;
 	/** @var array{mixed, array<mixed>} */
 	private array $layout = [null, []];
-	/** @var array<string, string> */
-	private array $regions;
-	private WorkerConfiguration $configuration;
+	private readonly WorkerConfiguration $configuration;
 
 	/**
 	 * @param array<string, mixed> $vars
 	 * @param array<string, string> $regions
-	 * @param WorkerConfiguration|null $configuration
 	 */
-	public function __construct(array $vars = [], array $regions = [], ?WorkerConfiguration $configuration = null) {
-		if($configuration === null) {
+	public function __construct(private array $vars = [], private array $regions = [], ?WorkerConfiguration $configuration = null) {
+		if(!$configuration instanceof \View\Workers\WorkerConfiguration) {
 			throw new RuntimeException('No configuration given');
 		}
-		$this->vars = $vars;
-		$this->regions = $regions;
 		$this->configuration = $configuration;
 	}
 
 	/**
 	 * @param string $key
-	 * @return bool
 	 */
 	public function has($key): bool {
 		return $this->configuration->getRecursiveAccessor()->has($this->vars, $key);
@@ -49,6 +42,7 @@ abstract class AbstractWorker implements Worker {
 		if(!$this->has($key)) {
 			return $default;
 		}
+
 		return $this->configuration->getRecursiveAccessor()->get($this->vars, $key, $default);
 	}
 
@@ -65,6 +59,7 @@ abstract class AbstractWorker implements Worker {
 		if(!is_scalar($value)) {
 			$value = '';
 		}
+
 		return $this->configuration->getContext()->escape($value);
 	}
 
@@ -77,7 +72,8 @@ abstract class AbstractWorker implements Worker {
 		if(!$this->has($key)) {
 			return $default;
 		}
-		return !!$this->getStr($key);
+
+		return (bool) $this->getStr($key);
 	}
 
 	/**
@@ -89,6 +85,7 @@ abstract class AbstractWorker implements Worker {
 		if(!$this->has($key)) {
 			return $default;
 		}
+
 		return (int) $this->getStr($key);
 	}
 
@@ -101,6 +98,7 @@ abstract class AbstractWorker implements Worker {
 		if(!$this->has($key)) {
 			return $default;
 		}
+
 		return (float) $this->getStr($key);
 	}
 
@@ -120,6 +118,7 @@ abstract class AbstractWorker implements Worker {
 		if(!is_array($value)) {
 			$value = [];
 		}
+
 		return $value;
 	}
 
@@ -136,6 +135,7 @@ abstract class AbstractWorker implements Worker {
 		if(!is_array($value) && !$value instanceof Traversable) {
 			$value = [];
 		}
+
 		return new ArrayProxy($value, $this->configuration->getObjectProxyFactory());
 	}
 
@@ -146,6 +146,7 @@ abstract class AbstractWorker implements Worker {
 	public function getObject($key) {
 		$factory = $this->configuration->getObjectProxyFactory();
 		$object = $this->get($key);
+
 		return $factory->create($object);
 	}
 
@@ -181,11 +182,11 @@ abstract class AbstractWorker implements Worker {
 
 	/**
 	 * @param string $layout
-	 * @param array $vars
 	 * @return $this
 	 */
 	public function layout($layout, array $vars = []) {
 		$this->layout = [$layout, $vars];
+
 		return $this;
 	}
 
@@ -195,8 +196,9 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function getRegion($name) {
 		if(array_key_exists($name, $this->regions)) {
-			return (string) $this->regions[$name];
+			return $this->regions[$name];
 		}
+
 		return '';
 	}
 
@@ -213,6 +215,7 @@ abstract class AbstractWorker implements Worker {
 	 */
 	protected function setRegions(array $regions) {
 		$this->regions = $regions;
+
 		return $this;
 	}
 
@@ -221,9 +224,10 @@ abstract class AbstractWorker implements Worker {
 	 * @return $this
 	 */
 	public function region($name) {
-		ob_start(function ($content) use ($name) {
+		ob_start(function($content) use ($name) {
 			$this->regions[$name] = $content;
 		});
+
 		return $this;
 	}
 
@@ -233,14 +237,11 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function getRegionOr($name) {
 		if(!array_key_exists($name, $this->regions)) {
-			ob_start(function ($content) {
-				return $content;
-			});
+			ob_start(fn($content) => $content);
 		} else {
-			ob_start(function () use ($name) {
-				return $this->regions[$name];
-			});
+			ob_start(fn() => $this->regions[$name]);
 		}
+
 		return $this;
 	}
 
@@ -249,6 +250,7 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function end() {
 		ob_end_flush();
+
 		return $this;
 	}
 
@@ -259,6 +261,7 @@ abstract class AbstractWorker implements Worker {
 	 */
 	public function set($key, $value) {
 		$this->vars[$key] = $value;
+
 		return $this;
 	}
 
@@ -269,20 +272,15 @@ abstract class AbstractWorker implements Worker {
 		return $this->vars;
 	}
 
-	/**
-	 * @param array $vars
-	 */
 	protected function setVars(array $vars = []) {
 		$this->vars = $vars;
 	}
 
 	/**
 	 * @param string|callable $resource
-	 * @param array $vars
 	 * @throws Exception
-	 * @return string
 	 */
-	abstract public function render($resource, array $vars = array());
+	abstract public function render($resource, array $vars = []): string;
 
 	/**
 	 * @return WorkerConfiguration

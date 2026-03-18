@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Workers;
 
 use View\Contexts\Context;

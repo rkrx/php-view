@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Workers\FileWorker;
 
 use View\Contexts\Context;
@@ -14,29 +15,25 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 	private $recursiveAccessor;
 	/** @var ObjectProxyFactory */
 	private $objectProxyFactory;
-	/** @var array */
-	private $config;
-	
+
 	/**
 	 * @param Context $context
 	 * @param RecursiveStringPath $recursiveAccessor
 	 * @param ObjectProxyFactory $objectProxyFactory
-	 * @param array $config
 	 */
-	public function __construct(?Context $context = null, ?RecursiveStringPath $recursiveAccessor = null, ?ObjectProxyFactory $objectProxyFactory = null, array $config = []) {
-		if($context === null) {
+	public function __construct(?Context $context = null, ?RecursiveStringPath $recursiveAccessor = null, ?ObjectProxyFactory $objectProxyFactory = null, private array $config = []) {
+		if(!$context instanceof Context) {
 			$context = new HtmlContext();
 		}
-		if($recursiveAccessor === null) {
+		if(!$recursiveAccessor instanceof RecursiveStringPath) {
 			$recursiveAccessor = new RecursiveStringPath();
 		}
-		if($objectProxyFactory === null) {
+		if(!$objectProxyFactory instanceof ObjectProxyFactory) {
 			$objectProxyFactory = new ObjectProxyFactory($context);
 		}
 		$this->context = $context;
 		$this->recursiveAccessor = $recursiveAccessor;
 		$this->objectProxyFactory = $objectProxyFactory;
-		$this->config = $config;
 	}
 
 	/**
@@ -59,7 +56,7 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 	public function getObjectProxyFactory() {
 		return $this->objectProxyFactory;
 	}
-	
+
 	/**
 	 * @return array
 	 */
@@ -67,6 +64,7 @@ class FileWorkerConfiguration implements WorkerConfiguration {
 		if(array_key_exists('paths', $this->config)) {
 			return $this->config['paths'];
 		}
+
 		return [];
 	}
 }

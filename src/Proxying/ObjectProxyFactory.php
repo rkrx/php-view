@@ -1,19 +1,12 @@
 <?php
+
 namespace View\Proxying;
 
 use Traversable;
 use View\Contexts\Context;
 
 class ObjectProxyFactory {
-	/** @var Context */
-	private $context;
-
-	/**
-	 * @param Context $context
-	 */
-	public function __construct(Context $context) {
-		$this->context = $context;
-	}
+	public function __construct(private readonly Context $context) {}
 
 	/**
 	 * @return Context
@@ -31,16 +24,14 @@ class ObjectProxyFactory {
 			$proxy = '';
 		} elseif(is_resource($object)) {
 			$proxy = $object;
-		} elseif(is_array($object) || $object instanceof Traversable) {
+		} elseif(is_iterable($object)) {
 			$proxy = new ArrayProxy($object, $this);
 		} elseif(is_object($object)) {
-			if(!is_object($object)) {
-				$object = (object) $object;
-			}
 			$proxy = new ObjectProxy($object, $this);
 		} else {
 			$proxy = $this->context->escape($object);
 		}
+
 		return $proxy;
 	}
 }

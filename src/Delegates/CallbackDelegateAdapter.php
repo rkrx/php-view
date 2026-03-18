@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Delegates;
 
 class CallbackDelegateAdapter implements Delegate {
@@ -14,10 +15,8 @@ class CallbackDelegateAdapter implements Delegate {
 
 	/**
 	 * @param string $resource
-	 * @param array $vars
-	 * @return string
 	 */
-	public function render($resource, array $vars = array()) {
+	public function render($resource, array $vars = []): string {
 		return call_user_func($this->callback, $resource, $vars);
 	}
 }

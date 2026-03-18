@@ -1,39 +1,24 @@
 <?php
 namespace View\Proxying\TestObjects;
 
-class TestObj1 {
-	/**
-	 * @return string
-	 */
-	public function getName() {
+class TestObj1 implements \Stringable {
+	public function getName(): string {
 		return 'Jane "Doe"';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getEmail() {
+	public function getEmail(): string {
 		return 'j.doe@example.org';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getEmailWithName() {
+	public function getEmailWithName(): string {
 		return 'Jane Doe <j.doe@example.org>';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function __toString() {
+	public function __toString(): string {
 		return sprintf('%s <%s>', $this->getName(), $this->getEmail());
 	}
 
-	/**
-	 * @return string
-	 */
-	public function __invoke() {
+	public function __invoke(): string {
 		return sprintf('%s <%s>', $this->getName(), $this->getEmail());
 	}
 }

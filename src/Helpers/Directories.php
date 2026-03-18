@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Helpers;
 
 class Directories {
@@ -11,6 +12,7 @@ class Directories {
 		foreach($parts as $part) {
 			$result = self::concatPaths($result, $part);
 		}
+
 		return $result;
 	}
 
@@ -25,6 +27,7 @@ class Directories {
 		if($basePath && $filename) {
 			return rtrim($basePath, '/') . '/' . ltrim($filename, '/');
 		}
+
 		return $basePath . $filename;
 	}
 }

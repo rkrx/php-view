@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Helpers;
 
 class RecursiveStringPath {
@@ -11,7 +12,7 @@ class RecursiveStringPath {
 	 * @param string $delimiter
 	 */
 	public function __construct($delimiter = '.') {
-		$this->delimiter = preg_quote($delimiter);
+		$this->delimiter = preg_quote($delimiter, '/');
 	}
 
 	/**
@@ -20,7 +21,8 @@ class RecursiveStringPath {
 	 * @return bool
 	 */
 	public function has($array, $path) {
-		$arrayPath = self::getPath($path);
+		$arrayPath = $this->getPath($path);
+
 		return RecursiveArrayPath::has($array, $arrayPath);
 	}
 
@@ -31,7 +33,8 @@ class RecursiveStringPath {
 	 * @return array
 	 */
 	public function get($array, $path, $default) {
-		$arrayPath = self::getPath($path);
+		$arrayPath = $this->getPath($path);
+
 		return RecursiveArrayPath::get($array, $arrayPath, $default);
 	}
 
@@ -42,7 +45,8 @@ class RecursiveStringPath {
 	 * @return mixed
 	 */
 	public function set($array, $path, $value) {
-		$arrayPath = self::getPath($path);
+		$arrayPath = $this->getPath($path);
+
 		return RecursiveArrayPath::set($array, $arrayPath, $value);
 	}
 
@@ -52,7 +56,8 @@ class RecursiveStringPath {
 	 * @return mixed
 	 */
 	public function del($array, $path) {
-		$arrayPath = self::getPath($path);
+		$arrayPath = $this->getPath($path);
+
 		return RecursiveArrayPath::del($array, $arrayPath);
 	}
 
@@ -61,12 +66,13 @@ class RecursiveStringPath {
 	 * @return array
 	 */
 	private function getPath($string) {
-		if(strpos($string, '.') === false) {
-			return array($string);
+		if(!str_contains($string, '.')) {
+			return [$string];
 		}
-		if(strpos($string, '\\') !== false) {
+		if(str_contains($string, '\\')) {
 			return preg_split("/\\\\.(*SKIP)(*FAIL)|{$this->delimiter}/s", $string);
 		}
+
 		return explode('.', $string);
 	}
 }

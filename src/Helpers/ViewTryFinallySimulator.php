@@ -1,4 +1,5 @@
 <?php
+
 namespace View\Helpers;
 
 abstract class ViewTryFinallySimulator {
@@ -12,11 +13,12 @@ abstract class ViewTryFinallySimulator {
 		$result = null;
 		try {
 			$result = call_user_func($fn);
-		} catch (\Exception $e) {
+		} catch(\Exception $e) {
 			call_user_func($finally);
 			throw $e;
 		}
 		call_user_func($finally);
+
 		return $result;
 	}
 }
