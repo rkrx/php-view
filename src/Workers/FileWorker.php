@@ -16,13 +16,13 @@ class FileWorker extends AbstractWorker {
 
 	/**
 	 * @param string $currentWorkDir
-	 * @param string $fileExt
-	 * @param WorkerConfiguration $configuration
-	 * @param Delegate $parent
+	 * @param string|null $fileExt
+	 * @param WorkerConfiguration|null $configuration
+	 * @param Delegate|null $parent
 	 */
 	public function __construct(
 		private $currentWorkDir,
-		string $fileExt = null,
+		?string $fileExt = null,
 		array $vars = [],
 		?WorkerConfiguration $configuration = null,
 		private readonly ?Delegate $parent = null
